@@ -1,2 +1,2 @@
-# burnt-urth
-A Scorched Earth clone, made for fun
+# Burnt Urth
+A _Scorched Earth_ clone, made for fun.
