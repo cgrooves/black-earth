@@ -1,5 +1,5 @@
 """
-Platformer Game
+Hello-World example given from https://arcade.academy/examples/platform_tutorial/step_01.html
 """
 import arcade
 
