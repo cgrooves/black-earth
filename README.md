@@ -28,7 +28,7 @@ Once you have created and activated your virtual environment, synchronize your p
 (venv_name) shell_prompt$: pip install -r requirements.txt
 ```
 
-When new packages need to be installed, please update the requirements.txt file by running:
+When new packages need to be installed, please update the `requirements.txt` file by running:
 
 ```
 (venv_name) shell_prompt$: pip freeze -l > requirements.txt
