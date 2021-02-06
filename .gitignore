@@ -1,0 +1,7 @@
+# Ignore environment and IDE folders
+/.vscode
+/.venv
+
+# Python ignores
+*.pyc
+__pycache__
