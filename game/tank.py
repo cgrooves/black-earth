@@ -3,7 +3,7 @@ import arcade
 from pymunk import Vec2d
 
 TANK_SIZE = 50
-TANK_TURRET_LENGTH = 50
+TANK_TURRET_LENGTH = 40
 TANK_STARTING_ANGLE_DEG = 45
 TURRET_ANGLE_MAX = 180
 TURRET_ANGLE_MIN = 0
@@ -47,9 +47,9 @@ class Tank:
         turretPosition.rotate_degrees(self.turretAngleDeg)
         arcade.draw_line(
             start_x=self.position.x,
-            start_y=self.position.y,
+            start_y=self.position.y + TURRET_WIDTH/2,
             end_x=turretPosition.x + self.position.x,
-            end_y=turretPosition.y + self.position.y,
+            end_y=turretPosition.y + self.position.y + TURRET_WIDTH/2,
             color=self.color,
             line_width=TURRET_WIDTH
         )
