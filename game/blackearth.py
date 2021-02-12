@@ -38,6 +38,10 @@ class MyGame(arcade.Window):
         self.player.on_key_press(key, modifiers)
     
     def on_key_release(self, key, modifiers):
+        # Handle window events first
+        if key == arcade.key.ESCAPE:
+            exit()
+
         # Pass through inputs to player
         self.player.on_key_release(key, modifiers)
 
