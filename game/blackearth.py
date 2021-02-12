@@ -58,6 +58,14 @@ class MyGame(arcade.Window):
         # Render the player
         self.player.draw()
 
+        # Render the player's tank angle
+        arcade.draw_text(
+            text=f"Tank Angle: {self.player.turretAngleDeg}",
+            start_x =10.0,
+            start_y=0.95*SCREEN_HEIGHT,
+            color=arcade.csscolor.WHITE_SMOKE
+        )
+
 def main():
     """ Main method """
     window = MyGame()
