@@ -11,8 +11,7 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Black Earth"
 
-
-class MyGame(arcade.Window):
+class BlackEarthGame(arcade.Window):
     """
     Main application class.
     """
@@ -22,14 +21,14 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.csscolor.SKY_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
         # Set up player
         self.player = Tank(
-            Vec2d(SCREEN_WIDTH/2,SCREEN_HEIGHT/2),
+            Vec2d(SCREEN_WIDTH/2,SCREEN_HEIGHT/3),
             color=arcade.csscolor.DARK_RED
             )
 
@@ -48,6 +47,17 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time):
         # Update game state for game objects
         self.player.on_update()
+        self.shapes = arcade.ShapeElementList()
+        
+        # Create the ground
+        ground = arcade.create_rectangle_filled(
+            center_x=SCREEN_WIDTH / 2,
+            center_y=SCREEN_HEIGHT / 6,
+            width=SCREEN_WIDTH,
+            height=SCREEN_HEIGHT / 3,
+            color=arcade.color.DARK_SPRING_GREEN
+        )
+        self.shapes.append(ground)
 
     def on_draw(self):
         """ Render the screen. """
@@ -65,10 +75,12 @@ class MyGame(arcade.Window):
             start_y=0.95*SCREEN_HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
         )
+        self.shapes.draw()
+
 
 def main():
     """ Main method """
-    window = MyGame()
+    window = BlackEarthGame()
     window.setup()
     arcade.run()
 
