@@ -12,8 +12,14 @@ TURRET_OFFSET_Y = 5
 TURRET_SPEED = 2
 
 class Tank:
+    """
+    Class encapsulating a player Tank
+    """
 
     def __init__(self, x: float, y: float, color: arcade.color):
+        """
+        Construct the tank with a position and color
+        """
         self.size = TANK_SIZE
         self.position = Vec2d(x,y)
         self.color = color
@@ -22,6 +28,9 @@ class Tank:
         self.moveTurret = 0
 
     def draw(self):
+        """
+        Render the tank body and turret
+        """
         # Draw tank body
         arcade.draw_arc_filled(
             center_x=self.position.x,
@@ -46,18 +55,37 @@ class Tank:
         )
     
     def on_key_press(self, key, modifiers):
+        """
+        Handle key presses.
+        
+        If a key is pressed, we'll set a turret movement
+        speed. We can't just move the turret, because otherwise the turret will
+        only move each and every time that we press a key (meaning, we have to
+        press, release, press, release, just to move twice). Instead, we'll change
+        the turret's movement speed based on which keys are pressed.
+        """
         if key == arcade.key.LEFT:
             self.moveTurret += TURRET_SPEED
         if key == arcade.key.RIGHT:
             self.moveTurret -= TURRET_SPEED
 
     def on_key_release(self, key, modifiers):
+        """
+        Handle key releases.
+
+        Decrement the turret speed
+        """
         if key == arcade.key.LEFT:
             self.moveTurret -= TURRET_SPEED
         if key == arcade.key.RIGHT:
             self.moveTurret += TURRET_SPEED
 
     def on_update(self):
+        """
+        Update the player state
+
+        Update the turret angle (and bound it).
+        """
         if self.moveTurret != 0:
             self.turretAngleDeg += self.moveTurret
         if self.turretAngleDeg > TURRET_ANGLE_MAX:

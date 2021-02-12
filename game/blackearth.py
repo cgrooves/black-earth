@@ -25,6 +25,8 @@ class MyGame(arcade.Window):
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
+
+        # Set up player
         self.player = Tank(
             x=SCREEN_WIDTH/2,
             y=SCREEN_HEIGHT/2,
@@ -32,12 +34,15 @@ class MyGame(arcade.Window):
             )
 
     def on_key_press(self, key, modifiers):
+        # Pass through inputs to player
         self.player.on_key_press(key, modifiers)
     
     def on_key_release(self, key, modifiers):
+        # Pass through inputs to player
         self.player.on_key_release(key, modifiers)
 
     def on_update(self, delta_time):
+        # Update game state for game objects
         self.player.on_update()
 
     def on_draw(self):
@@ -46,7 +51,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
         # Code to draw the screen goes here
 
-        # Create the player
+        # Render the player
         self.player.draw()
 
 def main():
