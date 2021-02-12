@@ -8,8 +8,7 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
-
-class MyGame(arcade.Window):
+class BlackEarthGame(arcade.Window):
     """
     Main application class.
     """
@@ -19,11 +18,21 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.csscolor.SKY_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        pass
+        self.shapes = arcade.ShapeElementList()
+        
+        # Create the ground
+        ground = arcade.create_rectangle_filled(
+            center_x=SCREEN_WIDTH / 2,
+            center_y=SCREEN_HEIGHT / 6,
+            width=SCREEN_WIDTH,
+            height=SCREEN_HEIGHT / 3,
+            color=arcade.color.DARK_SPRING_GREEN
+        )
+        self.shapes.append(ground)
 
     def on_draw(self):
         """ Render the screen. """
@@ -31,10 +40,12 @@ class MyGame(arcade.Window):
         arcade.start_render()
         # Code to draw the screen goes here
 
+        self.shapes.draw()
+
 
 def main():
     """ Main method """
-    window = MyGame()
+    window = BlackEarthGame()
     window.setup()
     arcade.run()
 
