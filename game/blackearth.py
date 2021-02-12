@@ -2,6 +2,7 @@
 Hello-World example given from https://arcade.academy/examples/platform_tutorial/step_01.html
 """
 import arcade
+from pymunk import Vec2d
 
 from tank import Tank
 
@@ -28,8 +29,7 @@ class MyGame(arcade.Window):
 
         # Set up player
         self.player = Tank(
-            x=SCREEN_WIDTH/2,
-            y=SCREEN_HEIGHT/2,
+            Vec2d(SCREEN_WIDTH/2,SCREEN_HEIGHT/2),
             color=arcade.csscolor.DARK_RED
             )
 

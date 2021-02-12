@@ -1,4 +1,3 @@
-
 import arcade
 from pymunk import Vec2d
 
@@ -16,12 +15,12 @@ class Tank:
     Class encapsulating a player Tank
     """
 
-    def __init__(self, x: float, y: float, color: arcade.color):
+    def __init__(self, position: Vec2d, color: arcade.color):
         """
         Construct the tank with a position and color
         """
         self.size = TANK_SIZE
-        self.position = Vec2d(x,y)
+        self.position = position
         self.color = color
         self.turretAngleDeg = TANK_STARTING_ANGLE_DEG
         self.turretLength = TANK_TURRET_LENGTH
