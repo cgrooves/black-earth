@@ -8,8 +8,23 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
+class Ground():
 
-class MyGame(arcade.Window):
+    def __init__(self, parent: arcade.Window):
+        """
+        Class encapsulating the ground
+        """
+        self.parent = parent
+    
+    def render(self):
+        arcade.draw_rectangle_filled(
+            SCREEN_WIDTH / 2, SCREEN_HEIGHT / 6,
+            SCREEN_WIDTH, SCREEN_HEIGHT / 3,
+            arcade.color.DARK_SPRING_GREEN
+        )
+
+
+class BlackEarthGame(arcade.Window):
     """
     Main application class.
     """
@@ -19,11 +34,11 @@ class MyGame(arcade.Window):
         # Call the parent class and set up the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.csscolor.SKY_BLUE)
 
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
-        pass
+        self.ground = Ground(self)
 
     def on_draw(self):
         """ Render the screen. """
@@ -31,10 +46,12 @@ class MyGame(arcade.Window):
         arcade.start_render()
         # Code to draw the screen goes here
 
+        self.ground.render()
+
 
 def main():
     """ Main method """
-    window = MyGame()
+    window = BlackEarthGame()
     window.setup()
     arcade.run()
 
