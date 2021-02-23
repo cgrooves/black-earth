@@ -1,6 +1,8 @@
 """
 Hello-World example given from https://arcade.academy/examples/platform_tutorial/step_01.html
 """
+from itertools import cycle
+
 import arcade
 from pymunk import Vec2d
 
@@ -27,11 +29,9 @@ class BlackEarthGame(arcade.Window):
         """ Set up the game here. Call this function to restart the game. """
 
         # Set up players
-        self.tanksList = []
-        self.activeTank = None
-        self.activeTankId = 0
 
         # Populate list based on number of tanks
+        self.tanksList = []
         for n in range(1,num_tanks + 1):
             tank = Tank(
                 name=f"Player {n}",
@@ -41,8 +41,10 @@ class BlackEarthGame(arcade.Window):
 
             self.tanksList.append(tank)
 
+        self.tanksCycle = cycle(self.tanksList)
+
         # Set the active player
-        self.activeTank = self.tanksList[self.activeTankId]
+        self.activeTank = next(self.tanksCycle)
 
         # Set up other shapes to draw
         self.shapes = arcade.ShapeElementList()
@@ -74,13 +76,8 @@ class BlackEarthGame(arcade.Window):
         # onto the active tank, so that the tank can do its own events with the
         # spacebar before we "pass the control"
         if key == arcade.key.SPACE:
-            # Wrap around the list if needed
-            if self.activeTankId < (len(self.tanksList) - 1):
-                self.activeTankId += 1
-            else:
-                self.activeTankId = 0 # set to beginning if over the edge
             # Actually set the active tank
-            self.activeTank = self.tanksList[self.activeTankId]
+            self.activeTank = next(self.tanksCycle)
 
     def on_update(self, delta_time):
         """ Update game state for game objects """
