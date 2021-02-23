@@ -4,7 +4,7 @@ Hello-World example given from https://arcade.academy/examples/platform_tutorial
 import arcade
 from pymunk import Vec2d
 
-from tank import Tank
+from tank import Tank, TANK_COLORS
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -23,7 +23,7 @@ class BlackEarthGame(arcade.Window):
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
-    def setup(self):
+    def setup(self, num_tanks=2):
         """ Set up the game here. Call this function to restart the game. """
 
         # Set up players
@@ -31,21 +31,15 @@ class BlackEarthGame(arcade.Window):
         self.activeTank = None
         self.activeTankId = 0
 
-        # TODO: read this in from a config file, or pass in a mapping
-        # of players and tanks or something of that sort
-        self.tanksList.append(
-            Tank(
-                Vec2d(SCREEN_WIDTH/3,SCREEN_HEIGHT/3),
-                color=arcade.csscolor.DARK_RED
+        # Populate list based on number of tanks
+        for n in range(1,num_tanks + 1):
+            tank = Tank(
+                name=f"Player {n}",
+                position = Vec2d(SCREEN_WIDTH*n/(num_tanks+1), SCREEN_HEIGHT/3),
+                color=next(TANK_COLORS)
             )
-        )
-        
-        self.tanksList.append(
-            Tank(
-                Vec2d(SCREEN_WIDTH*2/3, SCREEN_HEIGHT/3),
-                color=arcade.csscolor.DARK_BLUE
-            )
-        )
+
+            self.tanksList.append(tank)
 
         # Set the active player
         self.activeTank = self.tanksList[self.activeTankId]
@@ -62,7 +56,7 @@ class BlackEarthGame(arcade.Window):
             color=arcade.color.DARK_SPRING_GREEN
         )
         self.shapes.append(ground)
-
+    
     def on_key_press(self, key, modifiers):
         # Pass through inputs to activeTank
         self.activeTank.on_key_press(key, modifiers)
@@ -109,6 +103,14 @@ class BlackEarthGame(arcade.Window):
             start_y=0.95*SCREEN_HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
         )
+        
+        # Display the current player's name
+        arcade.draw_text(
+            text=f"Active: {self.activeTank.name}",
+            start_x=SCREEN_WIDTH/2-50,
+            start_y=0.95*SCREEN_HEIGHT,
+            color=arcade.csscolor.WHITE_SMOKE
+        )
 
         # Draw other shapes
         self.shapes.draw()
@@ -117,7 +119,7 @@ class BlackEarthGame(arcade.Window):
 def main():
     """ Main method """
     window = BlackEarthGame()
-    window.setup()
+    window.setup(num_tanks=4)
     arcade.run()
 
 

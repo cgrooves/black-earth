@@ -1,3 +1,5 @@
+from itertools import cycle
+
 import arcade
 from pymunk import Vec2d
 
@@ -10,15 +12,25 @@ TURRET_WIDTH = 5
 TURRET_OFFSET_Y = 5
 TURRET_SPEED = 2
 
+TANK_COLORS = cycle([
+    arcade.csscolor.RED,
+    arcade.csscolor.BLUE,
+    arcade.csscolor.GREEN,
+    arcade.csscolor.YELLOW,
+    arcade.csscolor.LAVENDER,
+    arcade.csscolor.DEEP_PINK
+])
+
 class Tank:
     """
     Class encapsulating a player Tank
     """
 
-    def __init__(self, position: Vec2d, color: arcade.color):
+    def __init__(self, name: str, position: Vec2d, color: arcade.color):
         """
         Construct the tank with a position and color
         """
+        self.name = name
         self.size = TANK_SIZE
         self.position = position
         self.color = color
