@@ -76,9 +76,9 @@ class Tank:
         the turret's movement speed based on which keys are pressed.
         """
         if key == arcade.key.LEFT:
-            self.moveTurret += TURRET_SPEED
+            self.moveTurret = TURRET_SPEED
         if key == arcade.key.RIGHT:
-            self.moveTurret -= TURRET_SPEED
+            self.moveTurret = -TURRET_SPEED
 
     def on_key_release(self, key, modifiers):
         """
@@ -87,9 +87,11 @@ class Tank:
         Decrement the turret speed
         """
         if key == arcade.key.LEFT:
-            self.moveTurret -= TURRET_SPEED
+            self.moveTurret = 0
         if key == arcade.key.RIGHT:
-            self.moveTurret += TURRET_SPEED
+            self.moveTurret = 0
+        if key == arcade.key.SPACE:
+            self.moveTurret = 0
 
     def on_update(self):
         """
