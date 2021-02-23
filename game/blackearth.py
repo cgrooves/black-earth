@@ -23,14 +23,16 @@ class BlackEarthGame(arcade.Window):
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
-        self.tanksList = []
-        self.activeTank = None
-
     def setup(self):
         """ Set up the game here. Call this function to restart the game. """
 
         # Set up players
         self.tanksList = []
+        self.activeTank = None
+        self.activeTankId = 0
+
+        # TODO: read this in from a config file, or pass in a mapping
+        # of players and tanks or something of that sort
         self.tanksList.append(
             Tank(
                 Vec2d(SCREEN_WIDTH/3,SCREEN_HEIGHT/3),
@@ -46,7 +48,7 @@ class BlackEarthGame(arcade.Window):
         )
 
         # Set the active player
-        self.activeTank = self.tanksList[0]
+        self.activeTank = self.tanksList[self.activeTankId]
 
         # Set up other shapes to draw
         self.shapes = arcade.ShapeElementList()
@@ -72,6 +74,19 @@ class BlackEarthGame(arcade.Window):
 
         # Pass through inputs to activeTank
         self.activeTank.on_key_release(key, modifiers)
+
+        # Handle space bar
+        # I'm putting this code here, after passing the key press and key release
+        # onto the active tank, so that the tank can do its own events with the
+        # spacebar before we "pass the control"
+        if key == arcade.key.SPACE:
+            # Wrap around the list if needed
+            if self.activeTankId < (len(self.tanksList) - 1):
+                self.activeTankId += 1
+            else:
+                self.activeTankId = 0 # set to beginning if over the edge
+            # Actually set the active tank
+            self.activeTank = self.tanksList[self.activeTankId]
 
     def on_update(self, delta_time):
         """ Update game state for game objects """
