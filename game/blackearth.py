@@ -1,12 +1,16 @@
 """
 Hello-World example given from https://arcade.academy/examples/platform_tutorial/step_01.html
 """
-from itertools import cycle
 
+# General import statements
+import itertools
+
+# Third-party library import statements
 import arcade
-from pymunk import Vec2d
+import pymunk
 
-from tank import Tank, TANK_COLORS
+# Local import statements
+import tank
 
 # Constants
 SCREEN_WIDTH = 1000
@@ -45,13 +49,13 @@ class BlackEarthGame(arcade.Window):
         # easily.
         self.tanksList = []
         for n in range(1,num_tanks + 1):
-            tank = Tank(
+            new_tank = tank.Tank(
                 name=f"Player {n}",
-                position = Vec2d(SCREEN_WIDTH*n/(num_tanks+1), SCREEN_HEIGHT/3),
-                color=next(TANK_COLORS)
+                position = pymunk.Vec2d(SCREEN_WIDTH*n/(num_tanks+1), SCREEN_HEIGHT/3),
+                color=next(tank.TANK_COLORS)
             )
 
-            self.tanksList.append(tank)
+            self.tanksList.append(new_tank)
 
         # Create a circular Iterator for the tank list
         # An Iterator is something different from a list, though certainly you can
@@ -63,7 +67,7 @@ class BlackEarthGame(arcade.Window):
         # to whatever Tank's turn is next. Next, next, next. Me calling "next" shouldn't
         # alter the list of tanks; I can have two "views" of the same data: the list
         # view, and the endless cycle view.
-        self.tanksCycle = cycle(self.tanksList)
+        self.tanksCycle = itertools.cycle(self.tanksList)
 
         # Set the active player
         self.activeTank = next(self.tanksCycle)

@@ -1,7 +1,9 @@
-from itertools import cycle
+# General import statements
+import itertools
 
+# Third-party library import statements
 import arcade
-from pymunk import Vec2d
+import pymunk
 
 TANK_SIZE = 50
 TANK_TURRET_LENGTH = 40
@@ -12,7 +14,7 @@ TURRET_WIDTH = 5
 TURRET_OFFSET_Y = 5
 TURRET_SPEED = 2
 
-TANK_COLORS = cycle([
+TANK_COLORS = itertools.cycle([
     arcade.csscolor.RED,
     arcade.csscolor.BLUE,
     arcade.csscolor.GREEN,
@@ -26,9 +28,9 @@ class Tank:
     Class encapsulating a player Tank
     """
 
-    def __init__(self, name: str, position: Vec2d, color: arcade.color):
+    def __init__(self, name: str, position: pymunk.Vec2d, color: arcade.color):
         """
-        Construct the tank with a position and color
+        Construct the tank with a name, position and color
         """
         self.name = name
         self.size = TANK_SIZE
@@ -54,7 +56,7 @@ class Tank:
         )
         # Draw turret
         # Calculate turret end point
-        turretPosition = Vec2d(self.turretLength, 0)
+        turretPosition = pymunk.Vec2d(self.turretLength, 0)
         turretPosition.rotate_degrees(self.turretAngleDeg)
         arcade.draw_line(
             start_x=self.position.x,
@@ -72,7 +74,7 @@ class Tank:
         If a key is pressed, we'll set a turret movement
         speed. We can't just move the turret, because otherwise the turret will
         only move each and every time that we press a key (meaning, we have to
-        press, release, press, release, just to move twice). Instead, we'll change
+        press, release, press, release, just to move two degrees). Instead, we'll change
         the turret's movement speed based on which keys are pressed.
         """
         if key == arcade.key.LEFT:
@@ -97,7 +99,7 @@ class Tank:
         """
         Update the player state
 
-        Update the turret angle (and bound it).
+        Update the turret angle (and bound it to a min and max).
         """
         if self.moveTurret != 0:
             self.turretAngleDeg += self.moveTurret
