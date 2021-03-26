@@ -162,8 +162,7 @@ class Tank:
             self.power = TURRET_POWER_MIN
     
     def processFireEvent(self):
-        print(f"Tank {self.name} fires at {self.turretAngleDeg} degrees and {self.power}% power!")
-
+        """Create the artillery round and pass it to the physics engine"""
         tank_round = bullet.BulletSprite(5, arcade.color.GHOST_WHITE)
         tank_round.angle = self.turretAngleDeg
         tank_round.center_x = self.turretTip.x
