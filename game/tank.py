@@ -13,12 +13,16 @@ import pymunk
 # they work, and we'll roll with it.
 TANK_SIZE = 50
 TANK_TURRET_LENGTH = 40
-TANK_STARTING_ANGLE_DEG = 45
 TURRET_ANGLE_MAX = 180
 TURRET_ANGLE_MIN = 0
 TURRET_WIDTH = 5
 TURRET_OFFSET_Y = 5
+
+TANK_STARTING_ANGLE_DEG = 45
 TURRET_SPEED_STEP = 2
+
+TURRET_POWER_MAX = 100
+TURRET_POWER_MIN = 0
 
 # Make an endless iterable of colors to use with Tanks.
 # Note: this may or may not survive; we'll probably think
@@ -51,6 +55,8 @@ class Tank:
         self.turretAngleDeg = TANK_STARTING_ANGLE_DEG
         self.turretLength = TANK_TURRET_LENGTH
         self.turretSpeed = 0
+        self.powerIncrement = 0
+        self.power = 50
 
     def draw(self):
         """
@@ -94,6 +100,12 @@ class Tank:
         if key == arcade.key.RIGHT:
             self.turretSpeed = -TURRET_SPEED_STEP
 
+        # Handle the power increment
+        if key == arcade.key.UP:
+            self.powerIncrement = TURRET_SPEED_STEP
+        if key == arcade.key.DOWN:
+            self.powerIncrement = -TURRET_SPEED_STEP
+
     def on_key_release(self, key, modifiers):
         """
         Handle key releases.
@@ -101,12 +113,15 @@ class Tank:
         Decrement the turret speed. The equivalent of saying "When!" when
         your dad is pouring juice.
         """
-        if key == arcade.key.LEFT:
+        if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.turretSpeed = 0
-        if key == arcade.key.RIGHT:
-            self.turretSpeed = 0
+
         if key == arcade.key.SPACE:
             self.turretSpeed = 0
+            self.powerIncrement = 0
+        
+        if key == arcade.key.UP or key == arcade.key.DOWN:
+            self.powerIncrement = 0
 
     def on_update(self):
         """
@@ -114,9 +129,18 @@ class Tank:
 
         Update the turret angle (and bound it to a min and max).
         """
-        if self.turretSpeed != 0:
-            self.turretAngleDeg += self.turretSpeed
+        # Increment the turret speed
+        self.turretAngleDeg += self.turretSpeed
+        # Bound the turret speed
         if self.turretAngleDeg > TURRET_ANGLE_MAX:
             self.turretAngleDeg = TURRET_ANGLE_MAX
         elif self.turretAngleDeg < TURRET_ANGLE_MIN:
             self.turretAngleDeg = TURRET_ANGLE_MIN
+        
+        # Increment the power
+        self.power += self.powerIncrement
+        # Bound the power
+        if self.power > TURRET_POWER_MAX:
+            self.power = TURRET_POWER_MAX
+        elif self.power < TURRET_POWER_MIN:
+            self.power = TURRET_POWER_MIN

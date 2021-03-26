@@ -142,12 +142,20 @@ class BlackEarthGame(arcade.Window):
 
         # Render the activeTank's tank angle
         arcade.draw_text(
-            text=f"Tank Angle: {self.activeTank.turretAngleDeg}",
+            text=f"Angle: {self.activeTank.turretAngleDeg}",
             start_x =10.0,
             start_y=0.95*SCREEN_HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
         )
-        
+
+        # Render the activeTank's power
+        arcade.draw_text(
+            text=f"Power: {self.activeTank.power}",
+            start_x =140.0,
+            start_y=0.95*SCREEN_HEIGHT,
+            color=arcade.csscolor.WHITE_SMOKE
+        )
+
         # Display the current player's name
         arcade.draw_text(
             text=f"Active: {self.activeTank.name}",
