@@ -7,6 +7,9 @@ import pymunk
 
 import numpy
 
+# Local imports
+import bullet
+
 # Make some global variables with general Tank constants
 
 # Note: In general, global variables are very much discouraged, and we
@@ -161,8 +164,8 @@ class Tank:
     def processFireEvent(self):
         print(f"Tank {self.name} fires at {self.turretAngleDeg} degrees and {self.power}% power!")
 
-        bullet = arcade.SpriteCircle(5, arcade.color.GHOST_WHITE)
-        bullet.angle = self.turretAngleDeg
-        bullet.center_x = self.turretTip.x
-        bullet.center_y = self.turretTip.y
-        self.parent.add_bullet(bullet, self.power)
+        tank_round = bullet.BulletSprite(5, arcade.color.GHOST_WHITE)
+        tank_round.angle = self.turretAngleDeg
+        tank_round.center_x = self.turretTip.x
+        tank_round.center_y = self.turretTip.y
+        self.parent.add_bullet(tank_round, self.power)
