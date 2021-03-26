@@ -10,3 +10,6 @@ class BulletSprite(arcade.SpriteCircle):
 
         if self.center_x <= 0 or self.center_x >= SCREEN_WIDTH:
             self.remove_from_sprite_lists()
+    
+    def detonate(self):
+        pass

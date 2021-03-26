@@ -102,8 +102,10 @@ class BlackEarthGame(arcade.Window):
             collision_type="ground"
         )
 
+        # Add collision between bullet and ground
         def bullet_ground_handler(bullet_sprite, ground_sprite, _arbiter, _space, _data):
             """Called for bullet/ground collision"""
+            bullet_sprite.detonate()
             bullet_sprite.remove_from_sprite_lists()
 
         self.physics_engine.add_collision_handler("bullet", "ground", post_handler=bullet_ground_handler)
