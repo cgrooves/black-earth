@@ -5,6 +5,8 @@ import itertools
 import arcade
 import pymunk
 
+import numpy
+
 # Make some global variables with general Tank constants
 
 # Note: In general, global variables are very much discouraged, and we
@@ -44,11 +46,17 @@ class Tank:
     tank.
     """
 
-    def __init__(self, name: str, position: pymunk.Vec2d, color: arcade.color):
+    def __init__(
+        self, name: str,
+        parent: arcade.Window,
+        position: pymunk.Vec2d,
+        color: arcade.color
+        ):
         """
         Construct the tank with a name, position and color
         """
         self.name = name
+        self.parent = parent
         self.size = TANK_SIZE
         self.position = position
         self.color = color
@@ -57,6 +65,7 @@ class Tank:
         self.turretSpeed = 0
         self.powerIncrement = 0
         self.power = 50
+        self.turretTip = pymunk.Vec2d()
 
     def draw(self):
         """
@@ -76,11 +85,14 @@ class Tank:
         # Calculate turret end point
         turretPosition = pymunk.Vec2d(self.turretLength, 0)
         turretPosition.rotate_degrees(self.turretAngleDeg)
+        self.turretTip.x = turretPosition.x + self.position.x
+        self.turretTip.y = turretPosition.y + self.position.y + TURRET_WIDTH/2
+
         arcade.draw_line(
             start_x=self.position.x,
             start_y=self.position.y + TURRET_WIDTH/2,
-            end_x=turretPosition.x + self.position.x,
-            end_y=turretPosition.y + self.position.y + TURRET_WIDTH/2,
+            end_x=self.turretTip.x,
+            end_y=self.turretTip.y,
             color=self.color,
             line_width=TURRET_WIDTH
         )
@@ -119,6 +131,7 @@ class Tank:
         if key == arcade.key.SPACE:
             self.turretSpeed = 0
             self.powerIncrement = 0
+            self.processFireEvent()
         
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.powerIncrement = 0
@@ -144,3 +157,12 @@ class Tank:
             self.power = TURRET_POWER_MAX
         elif self.power < TURRET_POWER_MIN:
             self.power = TURRET_POWER_MIN
+    
+    def processFireEvent(self):
+        print(f"Tank {self.name} fires at {self.turretAngleDeg} degrees and {self.power}% power!")
+
+        bullet = arcade.SpriteCircle(5, arcade.color.GHOST_WHITE)
+        bullet.angle = self.turretAngleDeg
+        bullet.center_x = self.turretTip.x
+        bullet.center_y = self.turretTip.y
+        self.parent.add_bullet(bullet, self.power)

@@ -8,6 +8,7 @@ import itertools
 # Third-party library import statements
 import arcade
 import pymunk
+from typing import Optional
 
 # Local import statements
 import tank
@@ -30,6 +31,12 @@ class BlackEarthGame(arcade.Window):
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
+        # Set up the bullet list
+        self.bullets_list: Optional[arcade.SpriteList] = None
+
+        # Set up physics engine
+        self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
+
     def setup(self, num_tanks=2):
         """ Set up the game here. Call this function to restart the game.
         
@@ -50,9 +57,10 @@ class BlackEarthGame(arcade.Window):
         self.tanksList = []
         for n in range(1,num_tanks + 1):
             new_tank = tank.Tank(
-                name=f"Player {n}",
+                name = f"Player {n}",
+                parent = self,
                 position = pymunk.Vec2d(SCREEN_WIDTH*n/(num_tanks+1), SCREEN_HEIGHT/3),
-                color=next(tank.TANK_COLORS)
+                color = next(tank.TANK_COLORS)
             )
 
             self.tanksList.append(new_tank)
@@ -84,7 +92,16 @@ class BlackEarthGame(arcade.Window):
             color=arcade.color.DARK_SPRING_GREEN
         )
         self.shapes.append(ground)
-    
+
+        # Set up bullets list
+        self.bullets_list = arcade.SpriteList()
+
+        # Add the physics
+        self.physics_engine = arcade.PymunkPhysicsEngine(
+            gravity=(0,-1500),
+            damping=1.0,
+        )
+
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
 
@@ -130,6 +147,8 @@ class BlackEarthGame(arcade.Window):
         # Make the active tank update
         self.activeTank.on_update()
 
+        self.physics_engine.step(delta_time=delta_time)
+
     def on_draw(self):
         """ Render the screen. """
 
@@ -139,6 +158,8 @@ class BlackEarthGame(arcade.Window):
         # Render the players
         for player in self.tanksList:
             player.draw()
+        
+        self.bullets_list.draw()
 
         # Render the activeTank's tank angle
         arcade.draw_text(
@@ -166,6 +187,15 @@ class BlackEarthGame(arcade.Window):
 
         # Draw other shapes
         self.shapes.draw()
+    
+    def add_bullet(self, bullet: arcade.Sprite, power: float):
+        self.bullets_list.append(bullet)
+        self.physics_engine.add_sprite(bullet,
+            mass=0.08,
+            damping=1.0,
+            friction=0.6,
+            collision_type="bullet")
+        self.physics_engine.apply_impulse(bullet, (power,0))
 
 
 def main():
