@@ -13,10 +13,7 @@ from typing import Optional
 # Local import statements
 import tank
 
-# Constants
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 650
-SCREEN_TITLE = "Black Earth"
+from constants import SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_TITLE
 
 class BlackEarthGame(arcade.Window):
     """
@@ -80,18 +77,14 @@ class BlackEarthGame(arcade.Window):
         # Set the active player
         self.activeTank = next(self.tanksCycle)
 
-        # Set up other shapes to draw (just the ground for now)
-        self.shapes = arcade.ShapeElementList()
-
         # Create the ground (just a rectangle for now)
-        ground = arcade.create_rectangle_filled(
-            center_x=SCREEN_WIDTH / 2,
-            center_y=SCREEN_HEIGHT / 6,
+        self.ground = arcade.SpriteSolidColor(
             width=SCREEN_WIDTH,
-            height=SCREEN_HEIGHT / 3,
+            height=SCREEN_HEIGHT//3,
             color=arcade.color.DARK_SPRING_GREEN
         )
-        self.shapes.append(ground)
+        self.ground.center_x = SCREEN_WIDTH / 2
+        self.ground.center_y = SCREEN_HEIGHT / 6
 
         # Set up bullets list
         self.bullets_list = arcade.SpriteList()
@@ -100,6 +93,13 @@ class BlackEarthGame(arcade.Window):
         self.physics_engine = arcade.PymunkPhysicsEngine(
             gravity=(0,-1500),
             damping=1.0,
+        )
+
+        # Add the ground
+        self.physics_engine.add_sprite(
+            self.ground,
+            body_type=arcade.PymunkPhysicsEngine.STATIC,
+            collision_type="ground"
         )
 
     def on_key_press(self, key, modifiers):
@@ -186,7 +186,7 @@ class BlackEarthGame(arcade.Window):
         )
 
         # Draw other shapes
-        self.shapes.draw()
+        self.ground.draw()
     
     def add_bullet(self, bullet: arcade.Sprite, power: float):
         self.bullets_list.append(bullet)
