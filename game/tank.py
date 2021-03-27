@@ -8,7 +8,7 @@ import pymunk
 import numpy
 
 # Local imports
-import bullet
+from weapons import weapons
 
 # Make some global variables with general Tank constants
 
@@ -163,7 +163,7 @@ class Tank:
     
     def processFireEvent(self):
         """Create the artillery round and pass it to the physics engine"""
-        tank_round = bullet.BulletSprite(5, arcade.color.GHOST_WHITE)
+        tank_round = weapons.Bullet(5, arcade.color.GHOST_WHITE)
         tank_round.angle = self.turretAngleDeg
         tank_round.center_x = self.turretTip.x
         tank_round.center_y = self.turretTip.y
