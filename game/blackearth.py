@@ -193,6 +193,14 @@ class BlackEarthGame(arcade.Window):
             color=arcade.csscolor.WHITE_SMOKE
         )
 
+        # Display the current player's active weapon name
+        arcade.draw_text(
+            text=f"Weapon: {self.activeTank.activeWeapon.name}",
+            start_x=SCREEN_WIDTH/2-50,
+            start_y=0.90*SCREEN_HEIGHT,
+            color=arcade.csscolor.WHITE_SMOKE
+        )
+
         # Draw other shapes
         self.ground.draw()
     

@@ -75,8 +75,10 @@ class Tank:
             weapons.Bullet,
             weapons.Missile
         ]
-
-        self.activeWeapon = self.weapons[0]
+        # Create a cyclical view of the weapons list
+        self.weaponsCycle = itertools.cycle(self.weapons)
+        # Set the active weapon
+        self.activeWeapon = next(self.weaponsCycle)
 
     def draw(self):
         """
@@ -146,6 +148,9 @@ class Tank:
         
         if key == arcade.key.UP or key == arcade.key.DOWN:
             self.powerIncrement = 0
+        
+        if key == arcade.key.TAB:
+            self.activeWeapon = next(self.weaponsCycle)
 
     def on_update(self):
         """

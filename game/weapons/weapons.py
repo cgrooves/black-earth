@@ -5,11 +5,10 @@ from constants import SCREEN_WIDTH
 class Bullet(arcade.SpriteCircle):
     """Bullet"""
 
+    name = "Bullet"
+
     def __init__(self):
         super().__init__(radius=5, color=arcade.color.GHOST_WHITE)
-
-    def get_name(self):
-        return "Bullet"
 
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
         """Handle when the sprite is moved by the physics engine
@@ -22,13 +21,12 @@ class Bullet(arcade.SpriteCircle):
             self.remove_from_sprite_lists()
     
     def detonate(self):
-        pass
+        print("little boom")
 
 class Missile(Bullet):
     """Missile class"""
 
-    def get_name(self):
-        return "Missile"
+    name = "Missile"
     
     def detonate(self):
         print("BIGGER BOOM!")
