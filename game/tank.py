@@ -8,7 +8,7 @@ import pymunk
 import numpy
 
 # Local imports
-from weapons import weapons
+from weapons import weaponsList
 
 # Make some global variables with general Tank constants
 
@@ -70,13 +70,8 @@ class Tank:
         self.power = 50
         self.turretTip = pymunk.Vec2d()
 
-        # Create a list of weapons
-        self.weapons = [
-            weapons.Bullet,
-            weapons.Missile
-        ]
         # Create a cyclical view of the weapons list
-        self.weaponsCycle = itertools.cycle(self.weapons)
+        self.weaponsCycle = itertools.cycle(weaponsList)
         # Set the active weapon
         self.activeWeapon = next(self.weaponsCycle)
 
