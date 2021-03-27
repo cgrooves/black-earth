@@ -5,6 +5,9 @@ from constants import SCREEN_WIDTH
 class Bullet(arcade.SpriteCircle):
     """Bullet"""
 
+    def __init__(self):
+        super().__init__(radius=5, color=arcade.color.GHOST_WHITE)
+
     def get_name(self):
         return "Bullet"
 

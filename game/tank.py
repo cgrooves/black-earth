@@ -70,6 +70,14 @@ class Tank:
         self.power = 50
         self.turretTip = pymunk.Vec2d()
 
+        # Create a list of weapons
+        self.weapons = [
+            weapons.Bullet,
+            weapons.Missile
+        ]
+
+        self.activeWeapon = self.weapons[0]
+
     def draw(self):
         """
         Render the tank body and turret
@@ -163,7 +171,7 @@ class Tank:
     
     def processFireEvent(self):
         """Create the artillery round and pass it to the physics engine"""
-        tank_round = weapons.Bullet(5, arcade.color.GHOST_WHITE)
+        tank_round = self.activeWeapon()
         tank_round.angle = self.turretAngleDeg
         tank_round.center_x = self.turretTip.x
         tank_round.center_y = self.turretTip.y
