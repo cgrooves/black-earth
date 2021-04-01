@@ -1,6 +1,6 @@
-from . weapons import Bullet, Missile
+from . weapons import Weapon, BabyMissile, Missile
 
 weaponsList = [
-    Bullet,
+    BabyMissile,
     Missile
 ]

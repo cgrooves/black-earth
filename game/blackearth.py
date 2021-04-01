@@ -12,6 +12,7 @@ from typing import Optional
 
 # Local import statements
 import tank
+from weapons import Weapon
 
 from config import WindowConfig, GameConfig, PhysicsConfig, TankConfig
 
@@ -31,7 +32,7 @@ class BlackEarthGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Set up member variables
-        self.bullets_list: Optional[arcade.SpriteList] = None
+        self.active_weapons: Optional[arcade.SpriteList] = None
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
 
     def setup(self, num_tanks=2):
@@ -51,8 +52,8 @@ class BlackEarthGame(arcade.Window):
         # Create the ground (just a rectangle for now)
         self.create_environment()
 
-        # Set up bullets list
-        self.bullets_list = arcade.SpriteList()
+        # Set up active weapons list
+        self.active_weapons = arcade.SpriteList()
 
         # Add the physics
         self.setup_physics_engine()
@@ -114,7 +115,7 @@ class BlackEarthGame(arcade.Window):
         for player in self.tanksList:
             player.draw()
         
-        self.bullets_list.draw()
+        self.active_weapons.draw()
 
         self.draw_hud()
 
@@ -184,13 +185,13 @@ class BlackEarthGame(arcade.Window):
             collision_type="ground"
         )
 
-        # Add collision between bullet and ground
-        def bullet_ground_handler(bullet_sprite, ground_sprite, _arbiter, _space, _data):
-            """Called for bullet/ground collision"""
-            bullet_sprite.detonate()
-            bullet_sprite.remove_from_sprite_lists()
+        # Add collision between tank weapon and ground
+        def weapon_ground_handler(weapon_sprite, ground_sprite, _arbiter, _space, _data):
+            """Called for weapon/ground collision"""
+            weapon_sprite.detonate()
+            weapon_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("bullet", "ground", post_handler=bullet_ground_handler)
+        self.physics_engine.add_collision_handler("weapon", "ground", post_handler=weapon_ground_handler)
     
     def draw_hud(self):
         # TODO: Encapsulate the HUD as a class
@@ -227,16 +228,16 @@ class BlackEarthGame(arcade.Window):
         )
 
     
-    def add_bullet(self, bullet: arcade.Sprite, power: float):
-        """Add a bullet to the physics engine"""
+    def add_active_weapon(self, weapon: Weapon, power: float):
+        """Add a tank's activated (i.e. fired) weapon to the physics engine"""
 
-        self.bullets_list.append(bullet)
-        self.physics_engine.add_sprite(bullet,
-            mass=bullet.mass,
+        self.active_weapons.append(weapon)
+        self.physics_engine.add_sprite(weapon,
+            mass=weapon.mass,
             damping=PhysicsConfig.DAMPING,
-            friction=bullet.friction,
-            collision_type="bullet")
-        self.physics_engine.apply_impulse(bullet, (power,0))
+            friction=weapon.friction,
+            collision_type="weapon")
+        self.physics_engine.apply_impulse(weapon, (power,0))
 
 
 def main():

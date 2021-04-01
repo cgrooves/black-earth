@@ -15,7 +15,7 @@ class PhysicsConfig:
     GRAVITY = -1500
     DAMPING = 1.0
 
-class BulletConfig:
+class WeaponConfig:
     MASS = 0.08
     FRICTION = 0.6
     COLOR = arcade.color.GHOST_WHITE

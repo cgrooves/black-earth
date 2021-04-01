@@ -1,16 +1,20 @@
 import arcade
 
-from config import WindowConfig, BulletConfig
+from config import WindowConfig, WeaponConfig
 
-class Bullet(arcade.SpriteCircle):
-    """Bullet"""
+class Weapon(arcade.SpriteCircle):
+    """Weapon base class
+    
+    All other classes should inherit from this class and override
+    at least the `name` and `detonate` function
+    """
 
-    name = "Bullet"
-    mass = BulletConfig.MASS
-    friction = BulletConfig.FRICTION
+    name = "Weapon"
+    mass = WeaponConfig.MASS
+    friction = WeaponConfig.FRICTION
 
     def __init__(self):
-        super().__init__(radius=5, color=BulletConfig.COLOR)
+        super().__init__(radius=5, color=WeaponConfig.COLOR)
 
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
         """Handle when the sprite is moved by the physics engine
@@ -23,9 +27,19 @@ class Bullet(arcade.SpriteCircle):
             self.remove_from_sprite_lists()
     
     def detonate(self):
+        pass
+
+
+class BabyMissile(Weapon):
+    """Baby Missile class"""
+
+    name = "Baby Missile"
+
+    def detonate(self):
         print("little boom")
 
-class Missile(Bullet):
+
+class Missile(Weapon):
     """Missile class"""
 
     name = "Missile"

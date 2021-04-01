@@ -149,8 +149,8 @@ class Tank:
     
     def processFireEvent(self):
         """Create the artillery round and pass it to the physics engine"""
-        tank_round = self.activeWeapon()
-        tank_round.angle = self.turretAngleDeg
-        tank_round.center_x = self.turretTip.x
-        tank_round.center_y = self.turretTip.y
-        self.parent.add_bullet(tank_round, self.power)
+        weapon = self.activeWeapon()
+        weapon.angle = self.turretAngleDeg
+        weapon.center_x = self.turretTip.x
+        weapon.center_y = self.turretTip.y
+        self.parent.add_active_weapon(weapon, self.power)
