@@ -48,13 +48,12 @@ class Tank:
         self.size = TANK_SIZE
         self.position = position
         self.color = color
-        self.turretAngleDeg = TANK_STARTING_ANGLE_DEG
-        self.turretLength = TANK_TURRET_LENGTH
-        self.turretSpeed = 0
+        #Turret Object instantiated for the current tank object
+        self.turret_obj = Turret(name,position,color)
 
     def draw(self):
         """
-        Render the tank body and turret
+        Render the tank body and calls turret method
         """
         # Draw tank body
         arcade.draw_arc_filled(
@@ -66,8 +65,46 @@ class Tank:
             start_angle=0.0,
             end_angle=180
         )
-        # Draw turret
-        # Calculate turret end point
+        # Draw turret and calculate turret end point
+        self.turret_obj.draw()
+
+    def on_key_press(self, key, modifiers):
+        """
+        Handle key presses.
+        """
+        self.turret_obj.on_key_press(key, modifiers)
+
+    def on_key_release(self, key, modifiers):
+        """
+        Handle key releases.
+        """
+        self.turret_obj.on_key_release(key, modifiers)
+
+    def on_update(self):
+        """
+        Update the player state
+        """
+        self.turret_obj.on_update()
+
+
+
+
+class Turret:
+    """
+    Class encapsulating a Turret
+    """
+    def __init__(self,name:str, position: pymunk.Vec2d, color: arcade.color):
+        self.turretname = name
+        self.position = position
+        self.turretcolor = color
+        self.turretAngleDeg = TANK_STARTING_ANGLE_DEG
+        self.turretLength = TANK_TURRET_LENGTH
+        self.turretSpeed = 0
+        
+    def draw(self):
+        """
+        Render the turret body
+        """
         turretPosition = pymunk.Vec2d(self.turretLength, 0)
         turretPosition.rotate_degrees(self.turretAngleDeg)
         arcade.draw_line(
@@ -75,13 +112,12 @@ class Tank:
             start_y=self.position.y + TURRET_WIDTH/2,
             end_x=turretPosition.x + self.position.x,
             end_y=turretPosition.y + self.position.y + TURRET_WIDTH/2,
-            color=self.color,
+            turretcolor=self.turretcolor,
             line_width=TURRET_WIDTH
         )
-    
     def on_key_press(self, key, modifiers):
         """
-        Handle key presses.
+        Handle key presses related to turret.
         
         If a key is pressed, we'll set a turret movement
         speed. We can't just move the turret, because otherwise the turret will
@@ -93,10 +129,10 @@ class Tank:
             self.turretSpeed = TURRET_SPEED_STEP
         if key == arcade.key.RIGHT:
             self.turretSpeed = -TURRET_SPEED_STEP
-
+            
     def on_key_release(self, key, modifiers):
         """
-        Handle key releases.
+        Handle key releases related to turret.
 
         Decrement the turret speed. The equivalent of saying "When!" when
         your dad is pouring juice.
@@ -110,8 +146,6 @@ class Tank:
 
     def on_update(self):
         """
-        Update the player state
-
         Update the turret angle (and bound it to a min and max).
         """
         if self.turretSpeed != 0:
