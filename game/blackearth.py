@@ -142,7 +142,7 @@ class BlackEarthGame(arcade.Window):
 
         # Render the activeTank's tank angle
         arcade.draw_text(
-            text=f"Tank Angle: {self.activeTank.turretAngleDeg}",
+            text=f"Tank Angle: {self.activeTank.turret_obj.turretAngleDeg}",
             start_x =10.0,
             start_y=0.95*SCREEN_HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
