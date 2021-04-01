@@ -20,18 +20,18 @@ class BlackEarthGame(arcade.Window):
     Main application class.
     """
 
+    ## ---------------------------------------------------- ##
+    # Overridden class functions
+    ## ---------------------------------------------------- ##
+
     def __init__(self, width, height, title):
         """Constructor"""
 
         # Call the parent class and set up the window
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
-
-        # Set up the bullet list
+        # Set up member variables
         self.bullets_list: Optional[arcade.SpriteList] = None
-
-        # Set up physics engine
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
 
     def setup(self, num_tanks=2):
@@ -46,69 +46,17 @@ class BlackEarthGame(arcade.Window):
         """
 
         # Set up players
-
-        # Populate a list based on number of tanks
-        # The list will be useful for keeping track of all of the tanks, and
-        # being able to do the same operation (such a "draw") on them all very
-        # easily.
-        self.tanksList = []
-        for n in range(1,num_tanks + 1):
-            new_tank = tank.Tank(
-                name = f"Player {n}",
-                parent = self,
-                position = pymunk.Vec2d(WindowConfig.WIDTH*n/(num_tanks+1), WindowConfig.HEIGHT/3),
-                color = next(TankConfig.COLORS)
-            )
-
-            self.tanksList.append(new_tank)
-
-        # Create a circular Iterator for the tank list
-        # An Iterator is something different from a list, though certainly you can
-        # "iterate" through things like lists and tuples and even dictionaries.
-        # In other words, lists and tuples and dictionaries can themselves be termed
-        # "Iterators". I still want a list of tanks, but I also want something that
-        # points to that list, but I can use to cycle through them endlessly. I know
-        # that I want this, because I know that I just want to be able to keep going
-        # to whatever Tank's turn is next. Next, next, next. Me calling "next" shouldn't
-        # alter the list of tanks; I can have two "views" of the same data: the list
-        # view, and the endless cycle view.
-        self.tanksCycle = itertools.cycle(self.tanksList)
-
-        # Set the active player
-        self.activeTank = next(self.tanksCycle)
+        self.create_tanks(num_tanks)
 
         # Create the ground (just a rectangle for now)
-        self.ground = arcade.SpriteSolidColor(
-            width=WindowConfig.WIDTH,
-            height=WindowConfig.HEIGHT//3,
-            color=arcade.color.DARK_SPRING_GREEN
-        )
-        self.ground.center_x = WindowConfig.WIDTH / 2
-        self.ground.center_y = WindowConfig.HEIGHT / 6
+        self.create_environment()
 
         # Set up bullets list
         self.bullets_list = arcade.SpriteList()
 
         # Add the physics
-        self.physics_engine = arcade.PymunkPhysicsEngine(
-            gravity=(0, PhysicsConfig.GRAVITY),
-            damping=PhysicsConfig.DAMPING
-        )
-
-        # Add the ground
-        self.physics_engine.add_sprite(
-            self.ground,
-            body_type=arcade.PymunkPhysicsEngine.STATIC,
-            collision_type="ground"
-        )
-
-        # Add collision between bullet and ground
-        def bullet_ground_handler(bullet_sprite, ground_sprite, _arbiter, _space, _data):
-            """Called for bullet/ground collision"""
-            bullet_sprite.detonate()
-            bullet_sprite.remove_from_sprite_lists()
-
-        self.physics_engine.add_collision_handler("bullet", "ground", post_handler=bullet_ground_handler)
+        self.setup_physics_engine()
+        self.setup_physics_collisions()
 
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
@@ -163,12 +111,89 @@ class BlackEarthGame(arcade.Window):
         arcade.start_render()
         # Code to draw the screen goes here
 
-        # Render the players
         for player in self.tanksList:
             player.draw()
         
         self.bullets_list.draw()
 
+        self.draw_hud()
+
+        # Draw other shapes
+        self.ground.draw()
+
+    ## ------------------------------------------------------------- ##
+    ## Custom functions defined below
+    ## ------------------------------------------------------------- ##
+
+    def create_tanks(self, num_tanks):
+        # Populate a list based on number of tanks
+        # The list will be useful for keeping track of all of the tanks, and
+        # being able to do the same operation (such a "draw") on them all very
+        # easily.
+        self.tanksList = []
+        for n in range(1,num_tanks + 1):
+            new_tank = tank.Tank(
+                name = f"Player {n}",
+                parent = self,
+                position = pymunk.Vec2d(WindowConfig.WIDTH*n/(num_tanks+1), WindowConfig.HEIGHT/3),
+                color = next(TankConfig.COLORS)
+            )
+
+            self.tanksList.append(new_tank)
+
+        # Create a circular Iterator for the tank list
+        # An Iterator is something different from a list, though certainly you can
+        # "iterate" through things like lists and tuples and even dictionaries.
+        # In other words, lists and tuples and dictionaries can themselves be termed
+        # "Iterators". I still want a list of tanks, but I also want something that
+        # points to that list, but I can use to cycle through them endlessly. I know
+        # that I want this, because I know that I just want to be able to keep going
+        # to whatever Tank's turn is next. Next, next, next. Me calling "next" shouldn't
+        # alter the list of tanks; I can have two "views" of the same data: the list
+        # view, and the endless cycle view.
+        self.tanksCycle = itertools.cycle(self.tanksList)
+
+        # Set the active player
+        self.activeTank = next(self.tanksCycle)
+    
+    def create_environment(self):
+        # Color the sky
+        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+
+        # Create the ground
+        self.ground = arcade.SpriteSolidColor(
+            width=WindowConfig.WIDTH,
+            height=WindowConfig.HEIGHT//3,
+            color=arcade.color.DARK_SPRING_GREEN
+        )
+        self.ground.center_x = WindowConfig.WIDTH / 2
+        self.ground.center_y = WindowConfig.HEIGHT / 6
+    
+    def setup_physics_engine(self):
+        self.physics_engine = arcade.PymunkPhysicsEngine(
+            gravity=(0, PhysicsConfig.GRAVITY),
+            damping=PhysicsConfig.DAMPING
+        )
+    
+    def setup_physics_collisions(self):
+
+        # Add the ground
+        self.physics_engine.add_sprite(
+            self.ground,
+            body_type=arcade.PymunkPhysicsEngine.STATIC,
+            collision_type="ground"
+        )
+
+        # Add collision between bullet and ground
+        def bullet_ground_handler(bullet_sprite, ground_sprite, _arbiter, _space, _data):
+            """Called for bullet/ground collision"""
+            bullet_sprite.detonate()
+            bullet_sprite.remove_from_sprite_lists()
+
+        self.physics_engine.add_collision_handler("bullet", "ground", post_handler=bullet_ground_handler)
+    
+    def draw_hud(self):
+        # TODO: Encapsulate the HUD as a class
         # Render the activeTank's tank angle
         arcade.draw_text(
             text=f"Angle: {self.activeTank.turretAngleDeg}",
@@ -201,8 +226,6 @@ class BlackEarthGame(arcade.Window):
             color=arcade.csscolor.WHITE_SMOKE
         )
 
-        # Draw other shapes
-        self.ground.draw()
     
     def add_bullet(self, bullet: arcade.Sprite, power: float):
         """Add a bullet to the physics engine"""
@@ -217,7 +240,7 @@ class BlackEarthGame(arcade.Window):
 
 
 def main():
-    """ Main method """
+    """ Main function for running the game """
     window = BlackEarthGame(
         width=WindowConfig.WIDTH,
         height=WindowConfig.HEIGHT,
@@ -226,6 +249,8 @@ def main():
     window.setup(num_tanks=GameConfig.NUM_TANKS)
     arcade.run()
 
-
+# Put this here in case we want to run the game from
+# some other file or function later, we can import the
+# main() function without running this file as a script
 if __name__ == "__main__":
     main()
