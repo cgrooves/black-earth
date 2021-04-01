@@ -13,18 +13,18 @@ from typing import Optional
 # Local import statements
 import tank
 
-from constants import SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_TITLE
+from config import WindowConfig, GameConfig, PhysicsConfig, TankConfig
 
 class BlackEarthGame(arcade.Window):
     """
     Main application class.
     """
 
-    def __init__(self):
+    def __init__(self, width, height, title):
         """Constructor"""
 
         # Call the parent class and set up the window
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+        super().__init__(width, height, title)
 
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
@@ -56,8 +56,8 @@ class BlackEarthGame(arcade.Window):
             new_tank = tank.Tank(
                 name = f"Player {n}",
                 parent = self,
-                position = pymunk.Vec2d(SCREEN_WIDTH*n/(num_tanks+1), SCREEN_HEIGHT/3),
-                color = next(tank.TANK_COLORS)
+                position = pymunk.Vec2d(WindowConfig.WIDTH*n/(num_tanks+1), WindowConfig.HEIGHT/3),
+                color = next(TankConfig.COLORS)
             )
 
             self.tanksList.append(new_tank)
@@ -79,20 +79,20 @@ class BlackEarthGame(arcade.Window):
 
         # Create the ground (just a rectangle for now)
         self.ground = arcade.SpriteSolidColor(
-            width=SCREEN_WIDTH,
-            height=SCREEN_HEIGHT//3,
+            width=WindowConfig.WIDTH,
+            height=WindowConfig.HEIGHT//3,
             color=arcade.color.DARK_SPRING_GREEN
         )
-        self.ground.center_x = SCREEN_WIDTH / 2
-        self.ground.center_y = SCREEN_HEIGHT / 6
+        self.ground.center_x = WindowConfig.WIDTH / 2
+        self.ground.center_y = WindowConfig.HEIGHT / 6
 
         # Set up bullets list
         self.bullets_list = arcade.SpriteList()
 
         # Add the physics
         self.physics_engine = arcade.PymunkPhysicsEngine(
-            gravity=(0,-1500),
-            damping=1.0,
+            gravity=(0, PhysicsConfig.GRAVITY),
+            damping=PhysicsConfig.DAMPING
         )
 
         # Add the ground
@@ -173,7 +173,7 @@ class BlackEarthGame(arcade.Window):
         arcade.draw_text(
             text=f"Angle: {self.activeTank.turretAngleDeg}",
             start_x =10.0,
-            start_y=0.95*SCREEN_HEIGHT,
+            start_y=0.95*WindowConfig.HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
         )
 
@@ -181,23 +181,23 @@ class BlackEarthGame(arcade.Window):
         arcade.draw_text(
             text=f"Power: {self.activeTank.power}",
             start_x =140.0,
-            start_y=0.95*SCREEN_HEIGHT,
+            start_y=0.95*WindowConfig.HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
         )
 
         # Display the current player's name
         arcade.draw_text(
             text=f"Active: {self.activeTank.name}",
-            start_x=SCREEN_WIDTH/2-50,
-            start_y=0.95*SCREEN_HEIGHT,
+            start_x=WindowConfig.WIDTH/2-50,
+            start_y=0.95*WindowConfig.HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
         )
 
         # Display the current player's active weapon name
         arcade.draw_text(
             text=f"Weapon: {self.activeTank.activeWeapon.name}",
-            start_x=SCREEN_WIDTH/2-50,
-            start_y=0.90*SCREEN_HEIGHT,
+            start_x=WindowConfig.WIDTH/2-50,
+            start_y=0.90*WindowConfig.HEIGHT,
             color=arcade.csscolor.WHITE_SMOKE
         )
 
@@ -205,19 +205,25 @@ class BlackEarthGame(arcade.Window):
         self.ground.draw()
     
     def add_bullet(self, bullet: arcade.Sprite, power: float):
+        """Add a bullet to the physics engine"""
+
         self.bullets_list.append(bullet)
         self.physics_engine.add_sprite(bullet,
-            mass=0.08,
-            damping=1.0,
-            friction=0.6,
+            mass=bullet.mass,
+            damping=PhysicsConfig.DAMPING,
+            friction=bullet.friction,
             collision_type="bullet")
         self.physics_engine.apply_impulse(bullet, (power,0))
 
 
 def main():
     """ Main method """
-    window = BlackEarthGame()
-    window.setup(num_tanks=4)
+    window = BlackEarthGame(
+        width=WindowConfig.WIDTH,
+        height=WindowConfig.HEIGHT,
+        title=WindowConfig.TITLE
+    )
+    window.setup(num_tanks=GameConfig.NUM_TANKS)
     arcade.run()
 
 

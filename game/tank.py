@@ -9,37 +9,7 @@ import numpy
 
 # Local imports
 from weapons import weaponsList
-
-# Make some global variables with general Tank constants
-
-# Note: In general, global variables are very much discouraged, and we
-# should put a TODO: here for us to remove these and put them into, say,
-# a config file or some higher-level function to delegate, but for now
-# they work, and we'll roll with it.
-TANK_SIZE = 50
-TANK_TURRET_LENGTH = 40
-TURRET_ANGLE_MAX = 180
-TURRET_ANGLE_MIN = 0
-TURRET_WIDTH = 5
-TURRET_OFFSET_Y = 5
-
-TANK_STARTING_ANGLE_DEG = 45
-TURRET_SPEED_STEP = 2
-
-TURRET_POWER_MAX = 100
-TURRET_POWER_MIN = 0
-
-# Make an endless iterable of colors to use with Tanks.
-# Note: this may or may not survive; we'll probably think
-# of a better way to do this in the future.
-TANK_COLORS = itertools.cycle([
-    arcade.csscolor.RED,
-    arcade.csscolor.BLUE,
-    arcade.csscolor.GREEN,
-    arcade.csscolor.YELLOW,
-    arcade.csscolor.LAVENDER,
-    arcade.csscolor.DEEP_PINK
-])
+from config import TankConfig, TurretConfig
 
 class Tank:
     """
@@ -60,18 +30,26 @@ class Tank:
         """
         self.name = name
         self.parent = parent
-        self.size = TANK_SIZE
+        self.size = TankConfig.SIZE
         self.position = position
         self.color = color
-        self.turretAngleDeg = TANK_STARTING_ANGLE_DEG
-        self.turretLength = TANK_TURRET_LENGTH
+
+        # Create the turret
+        # TODO: make a Turret class later on to encapsulate this
+        # Then creating the turret might look something more like
+        # >> self.turret = TurretBasic()
+        self.turretAngleDeg = TurretConfig.STARTING_ANGLE_DEG
+        self.turretLength = TurretConfig.LENGTH
+        self.power = TurretConfig.POWER_START
+        
         self.turretSpeed = 0
         self.powerIncrement = 0
-        self.power = 50
+        
         self.turretTip = pymunk.Vec2d()
 
         # Create a cyclical view of the weapons list
         self.weaponsCycle = itertools.cycle(weaponsList)
+
         # Set the active weapon
         self.activeWeapon = next(self.weaponsCycle)
 
@@ -94,15 +72,15 @@ class Tank:
         turretPosition = pymunk.Vec2d(self.turretLength, 0)
         turretPosition.rotate_degrees(self.turretAngleDeg)
         self.turretTip.x = turretPosition.x + self.position.x
-        self.turretTip.y = turretPosition.y + self.position.y + TURRET_WIDTH/2
+        self.turretTip.y = turretPosition.y + self.position.y + TurretConfig.WIDTH/2
 
         arcade.draw_line(
             start_x=self.position.x,
-            start_y=self.position.y + TURRET_WIDTH/2,
+            start_y=self.position.y + TurretConfig.WIDTH/2,
             end_x=self.turretTip.x,
             end_y=self.turretTip.y,
             color=self.color,
-            line_width=TURRET_WIDTH
+            line_width=TurretConfig.WIDTH
         )
     
     def on_key_press(self, key, modifiers):
@@ -116,15 +94,15 @@ class Tank:
         the turret's movement speed based on which keys are pressed.
         """
         if key == arcade.key.LEFT:
-            self.turretSpeed = TURRET_SPEED_STEP
+            self.turretSpeed = TurretConfig.INC_STEP
         if key == arcade.key.RIGHT:
-            self.turretSpeed = -TURRET_SPEED_STEP
+            self.turretSpeed = -TurretConfig.INC_STEP
 
         # Handle the power increment
         if key == arcade.key.UP:
-            self.powerIncrement = TURRET_SPEED_STEP
+            self.powerIncrement = TurretConfig.INC_STEP
         if key == arcade.key.DOWN:
-            self.powerIncrement = -TURRET_SPEED_STEP
+            self.powerIncrement = -TurretConfig.INC_STEP
 
     def on_key_release(self, key, modifiers):
         """
@@ -156,18 +134,18 @@ class Tank:
         # Increment the turret speed
         self.turretAngleDeg += self.turretSpeed
         # Bound the turret speed
-        if self.turretAngleDeg > TURRET_ANGLE_MAX:
-            self.turretAngleDeg = TURRET_ANGLE_MAX
-        elif self.turretAngleDeg < TURRET_ANGLE_MIN:
-            self.turretAngleDeg = TURRET_ANGLE_MIN
+        if self.turretAngleDeg > TurretConfig.ANGLE_MAX:
+            self.turretAngleDeg = TurretConfig.ANGLE_MAX
+        elif self.turretAngleDeg < TurretConfig.ANGLE_MIN:
+            self.turretAngleDeg = TurretConfig.ANGLE_MIN
         
         # Increment the power
         self.power += self.powerIncrement
         # Bound the power
-        if self.power > TURRET_POWER_MAX:
-            self.power = TURRET_POWER_MAX
-        elif self.power < TURRET_POWER_MIN:
-            self.power = TURRET_POWER_MIN
+        if self.power > TurretConfig.POWER_MAX:
+            self.power = TurretConfig.POWER_MAX
+        elif self.power < TurretConfig.POWER_MIN:
+            self.power = TurretConfig.POWER_MIN
     
     def processFireEvent(self):
         """Create the artillery round and pass it to the physics engine"""
