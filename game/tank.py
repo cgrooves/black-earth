@@ -154,4 +154,4 @@ class Tank:
         weapon.center_x = self.turretTip.x
         weapon.center_y = self.turretTip.y
         weapon.power = self.power
-        self.parent.add_active_weapon(weapon)
+        self.parent.queue_fire_event(weapon)

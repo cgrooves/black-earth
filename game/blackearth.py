@@ -4,6 +4,7 @@ Hello-World example given from https://arcade.academy/examples/platform_tutorial
 
 # General import statements
 import itertools
+import queue
 
 # Third-party library import statements
 import arcade
@@ -34,6 +35,8 @@ class BlackEarthGame(arcade.Window):
         # Set up member variables
         self.active_weapons: Optional[arcade.SpriteList] = None
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
+        self.processing_firing_events = False
+        self.weapons_queue = Optional[queue.Queue]
 
     def setup(self, num_tanks=2):
         """ Set up the game here. Call this function to restart the game.
@@ -52,8 +55,8 @@ class BlackEarthGame(arcade.Window):
         # Create the ground (just a rectangle for now)
         self.create_environment()
 
-        # Set up active weapons list
-        self.active_weapons = arcade.SpriteList()
+        # Set up weapons queue and active weapons list
+        self.setup_weapons(num_tanks)
 
         # Add the physics
         self.setup_physics_engine()
@@ -61,6 +64,10 @@ class BlackEarthGame(arcade.Window):
 
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
+
+        # Check if we should be accepting player inputs
+        if self.processing_firing_events:
+            return
 
         # Pass through inputs to activeTank
 
@@ -87,6 +94,10 @@ class BlackEarthGame(arcade.Window):
         if key == arcade.key.ESCAPE:
             exit()
 
+        # Check if we should be accepting player inputs
+        if self.processing_firing_events:
+            return
+
         # Pass through inputs to activeTank
         self.activeTank.on_key_release(key, modifiers)
 
@@ -104,7 +115,14 @@ class BlackEarthGame(arcade.Window):
         # Make the active tank update
         self.activeTank.on_update()
 
-        self.physics_engine.step(delta_time=delta_time)
+        if self.processing_firing_events:
+            # Update physics
+            self.physics_engine.step(delta_time=delta_time)
+
+            # Check to see if its time to move on
+            if len(self.active_weapons) == 0:
+
+                self.processing_firing_events = False
 
     def on_draw(self):
         """ Render the screen. """
@@ -169,6 +187,19 @@ class BlackEarthGame(arcade.Window):
         )
         self.ground.center_x = WindowConfig.WIDTH / 2
         self.ground.center_y = WindowConfig.HEIGHT / 6
+
+    def setup_weapons(self, num_tanks: int):
+        self.active_weapons = arcade.SpriteList()
+
+        # Set up the firing queue
+        if GameConfig.TURN_STYLE == GameConfig.TurnStyle.SEQUENTIAL:
+            maxsize = 1
+        elif GameConfig.TURN_STYLE == GameConfig.TurnStyle.SYNCHRONOUS:
+            maxsize = num_tanks
+        else:
+            raise IOError(f"{GameConfig.TURN_STYLE} is not a valid turn style option!")
+
+        self.weapons_queue = queue.Queue(maxsize=maxsize)
     
     def setup_physics_engine(self):
         self.physics_engine = arcade.PymunkPhysicsEngine(
@@ -237,6 +268,19 @@ class BlackEarthGame(arcade.Window):
             friction=weapon.friction,
             collision_type="weapon")
         self.physics_engine.apply_impulse(weapon, (weapon.power,0))
+
+    def queue_fire_event(self, weapon: Weapon):
+        """Queue a fire event to be processed by the game"""
+
+        self.weapons_queue.put(weapon)
+
+        if self.weapons_queue.full():
+            self.processing_firing_events = True
+            while not self.weapons_queue.empty():
+                self.add_active_weapon(self.weapons_queue.get())
+        
+        return
+
 
 
 def main():

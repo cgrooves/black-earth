@@ -8,8 +8,14 @@ class WindowConfig:
     HEIGHT = 650
     TITLE = "Black Earth"
 
+
 class GameConfig:
+    class TurnStyle:
+        SEQUENTIAL = 1
+        SYNCHRONOUS = 2
+
     NUM_TANKS = 4
+    TURN_STYLE = TurnStyle.SYNCHRONOUS
 
 class PhysicsConfig:
     GRAVITY = -1500
