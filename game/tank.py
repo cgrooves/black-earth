@@ -153,4 +153,5 @@ class Tank:
         weapon.angle = self.turretAngleDeg
         weapon.center_x = self.turretTip.x
         weapon.center_y = self.turretTip.y
-        self.parent.add_active_weapon(weapon, self.power)
+        weapon.power = self.power
+        self.parent.add_active_weapon(weapon)

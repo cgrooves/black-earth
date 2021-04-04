@@ -227,8 +227,7 @@ class BlackEarthGame(arcade.Window):
             color=arcade.csscolor.WHITE_SMOKE
         )
 
-    
-    def add_active_weapon(self, weapon: Weapon, power: float):
+    def add_active_weapon(self, weapon: Weapon):
         """Add a tank's activated (i.e. fired) weapon to the physics engine"""
 
         self.active_weapons.append(weapon)
@@ -237,7 +236,7 @@ class BlackEarthGame(arcade.Window):
             damping=PhysicsConfig.DAMPING,
             friction=weapon.friction,
             collision_type="weapon")
-        self.physics_engine.apply_impulse(weapon, (power,0))
+        self.physics_engine.apply_impulse(weapon, (weapon.power,0))
 
 
 def main():
