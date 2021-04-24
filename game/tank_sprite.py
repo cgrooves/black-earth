@@ -1,6 +1,7 @@
 """ Sprite Sample Program """
 
 import random
+import pymunk
 import arcade
 from weapons import Weapon
 import tank
@@ -35,33 +36,17 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables """
 
-        # Sprite lists
-        self.tank_list = arcade.SpriteList()
-        self.bullet_list = arcade.SpriteList()
-
-        # Setup the player
-        
-        # Turret image from kenney.nl
-        self.turret_sprite = arcade.Sprite("./game/images/turret.png", SPRITE_SCALING_PLAYER)
-        self.turret_sprite.center_x = 62
-        self.turret_sprite.center_y = 59
-        self.tank_list.append(self.turret_sprite)
-
-        # Tank track image from kenney.nl
-        self.track_sprite = arcade.Sprite("./game/images/tracks.png", SPRITE_SCALING_PLAYER)
-        self.track_sprite.center_x = 50
-        self.track_sprite.center_y = 40
-        self.tank_list.append(self.track_sprite)
-
-        # Tank body image from kenney.nl
-        self.tank_sprite = arcade.Sprite("./game/images/body.png", SPRITE_SCALING_PLAYER)
-        self.tank_sprite.center_x = 50
-        self.tank_sprite.center_y = 50
-        self.tank_list.append(self.tank_sprite)
+        self.tank = tank.Tank("player", self, pymunk.Vec2d(50,50), arcade.color.AERO_BLUE)
 
     def on_draw(self):
         arcade.start_render()
-        self.tank_list.draw()
+        self.tank.draw()
+
+    def on_update(self, delta_time):
+        """ Update game state for game objects """
+
+        # Make the active tank update
+        self.tank.on_update()
 
 def main():
     """ Main method """
