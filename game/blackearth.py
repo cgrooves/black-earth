@@ -48,6 +48,7 @@ class BlackEarthGame(arcade.Window):
 
         # Set up players
         self.create_tanks(num_tanks)
+        self.tank_list = arcade.SpriteList
 
         # Create the ground (just a rectangle for now)
         self.create_environment()

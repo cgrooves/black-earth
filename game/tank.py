@@ -57,16 +57,16 @@ class Tank:
         """
         Render the tank body and turret
         """
+        # Defining scaling factor of tank sprites.
+        SPRITE_SCALING_PLAYER = 0.5
+
+        # Tank Sprite List
+        self.player_list = arcade.SpriteList()
+        
         # Draw tank body
-        arcade.draw_arc_filled(
-            center_x=self.position.x,
-            center_y=self.position.y,
-            width=self.size,
-            height=self.size,
-            color=self.color,
-            start_angle=0.0,
-            end_angle=180
-        )
+        self.player_sprite = arcade.Sprite("./game/images/body.png", SPRITE_SCALING_PLAYER)
+        self.player_list.append(self.player_sprite)
+
         # Draw turret
         # Calculate turret end point
         turretPosition = pymunk.Vec2d(self.turretLength, 0)
@@ -74,14 +74,14 @@ class Tank:
         self.turretTip.x = turretPosition.x + self.position.x
         self.turretTip.y = turretPosition.y + self.position.y + TurretConfig.WIDTH/2
 
-        arcade.draw_line(
-            start_x=self.position.x,
-            start_y=self.position.y + TurretConfig.WIDTH/2,
-            end_x=self.turretTip.x,
-            end_y=self.turretTip.y,
-            color=self.color,
-            line_width=TurretConfig.WIDTH
-        )
+        #arcade.draw_line(
+        #    start_x=self.position.x,
+        #    start_y=self.position.y + TurretConfig.WIDTH/2,
+        #    end_x=self.turretTip.x,
+        #    end_y=self.turretTip.y,
+        #    color=self.color,
+        #    line_width=TurretConfig.WIDTH
+        #)
     
     def on_key_press(self, key, modifiers):
         """
