@@ -21,7 +21,7 @@ class MyGame(arcade.Window):
     def __init__(self):
         """ Initializer """
         # Call the parent class initializer
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Tank Sprite Example")
 
         # Variables that hold sprit lists.
         self.player_list = None
@@ -32,6 +32,8 @@ class MyGame(arcade.Window):
 
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
+
+        arcade.set_background_color(arcade.color.DARK_LAVA)
 
     def setup(self):
         """ Set up the game and initialize the variables """
