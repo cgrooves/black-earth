@@ -14,6 +14,7 @@ SPRITE_SCALING_PLAYER = 0.5
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+ANGLE_SPEED = 5
 
 class MyGame(arcade.Window):
     """ Our custom Window Class"""
@@ -50,6 +51,20 @@ class MyGame(arcade.Window):
 
         # Make the active tank update
         self.tank.on_update()
+
+    # def on_key_press(self, key, modifiers):
+    #     
+    #     # Rotate Left/Right.
+    #     # May be moved into the Tank Class, but trying it here now.
+
+    #      if key == arcade.key.LEFT:
+    #         self.tank_sprite.change_angle = ANGLE_SPEED
+    #     elif key == arcade.key.RIGHT:
+    #         self.tank_sprite.change_angle = -ANGLE_SPEED
+
+    #  def on_key_release(self, key, modifiers):
+    #     if key == arcade.key.LEFT or key == arcade.key.RIGHT:
+    #         self.tank_sprite.change_angle = 0
 
 def main():
     """ Main method """

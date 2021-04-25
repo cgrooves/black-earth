@@ -4,7 +4,7 @@ import itertools
 # Third-party library import statements
 import arcade
 import pymunk
-
+import math
 import numpy
 
 # Local imports
@@ -140,6 +140,7 @@ class Tank:
         """
         # Increment the turret speed
         self.turretAngleDeg += self.turretSpeed
+        
         # Bound the turret speed
         if self.turretAngleDeg > TurretConfig.ANGLE_MAX:
             self.turretAngleDeg = TurretConfig.ANGLE_MAX
