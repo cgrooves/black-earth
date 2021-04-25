@@ -33,6 +33,7 @@ class MyGame(arcade.Window):
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
+        # Set window background color
         arcade.set_background_color(arcade.color.DARK_LAVA)
 
     def setup(self):
