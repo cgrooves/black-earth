@@ -16,6 +16,8 @@ class Weapon(arcade.SpriteCircle):
     def __init__(self):
         super().__init__(radius=5, color=WeaponConfig.COLOR)
 
+        self.power = 0
+
     def pymunk_moved(self, physics_engine, dx, dy, d_angle):
         """Handle when the sprite is moved by the physics engine
         
