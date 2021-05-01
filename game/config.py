@@ -15,7 +15,7 @@ class GameConfig:
         SYNCHRONOUS = 2
 
     NUM_TANKS = 4
-    TURN_STYLE = TurnStyle.SYNCHRONOUS
+    TURN_STYLE = TurnStyle.SEQUENTIAL
 
 class PhysicsConfig:
     GRAVITY = -1500
