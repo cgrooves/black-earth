@@ -4,7 +4,6 @@ import itertools
 # Third-party library import statements
 import arcade
 import pymunk
-import math
 import numpy
 
 # Local imports
@@ -160,8 +159,13 @@ class Tank:
         self.body_sprite.center_y = self.position.y
         self.track_sprite.center_x = self.position.x
         self.track_sprite.center_y = self.position.y - 10
-        self.turret_sprite.center_x = self.position.x + 12
-        self.turret_sprite.center_y = self.position.y + 9
+
+        # Rotate turret
+        self.turret_sprite.center_x = 0
+        self.turret_sprite.center_y = 0
+        self.turret_sprite.angle = self.turretAngleDeg
+        self.turret_sprite.center_x = self.position.x + 9*numpy.cos(numpy.deg2rad(self.turretAngleDeg))
+        self.turret_sprite.center_y = self.position.y + 9*numpy.sin(numpy.deg2rad(self.turretAngleDeg)) + 9
     
     def processFireEvent(self):
         """Create the artillery round and pass it to the physics engine"""
