@@ -52,19 +52,17 @@ class MyGame(arcade.Window):
         # Make the active tank update
         self.tank.on_update()
 
-    # def on_key_press(self, key, modifiers):
-    #     
-    #     # Rotate Left/Right.
-    #     # May be moved into the Tank Class, but trying it here now.
+    def on_key_press(self, key, modifiers):
+        # Pass through
+        self.tank.on_key_press(key, modifiers)
 
-    #      if key == arcade.key.LEFT:
-    #         self.tank_sprite.change_angle = ANGLE_SPEED
-    #     elif key == arcade.key.RIGHT:
-    #         self.tank_sprite.change_angle = -ANGLE_SPEED
+    def on_key_release(self, key, modifiers):
+        # Handle quit
+        if key == arcade.key.ESCAPE:
+            exit()
 
-    #  def on_key_release(self, key, modifiers):
-    #     if key == arcade.key.LEFT or key == arcade.key.RIGHT:
-    #         self.tank_sprite.change_angle = 0
+        # Pass through
+        self.tank.on_key_release(key, modifiers)
 
 def main():
     """ Main method """
