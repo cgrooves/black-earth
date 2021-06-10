@@ -24,13 +24,6 @@ class MyGame(arcade.Window):
         # Call the parent class initializer
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Tank Sprite Example")
 
-        # Variables that hold sprit lists.
-        self.player_list = None
-        self.bullet_list = None
-
-        # Setup up player info
-        self.tank_sprite = None
-
         # Don't show the mouse cursor
         self.set_mouse_visible(False)
 
@@ -40,7 +33,7 @@ class MyGame(arcade.Window):
     def setup(self):
         """ Set up the game and initialize the variables """
 
-        self.tank = tank.Tank("player", self, pymunk.Vec2d(50,50), arcade.color.AERO_BLUE)
+        self.tank = tank.Tank("player", self, pymunk.Vec2d(SCREEN_WIDTH//2,SCREEN_HEIGHT//2), arcade.color.AERO_BLUE)
 
     def on_draw(self):
         arcade.start_render()
@@ -63,6 +56,9 @@ class MyGame(arcade.Window):
 
         # Pass through
         self.tank.on_key_release(key, modifiers)
+    
+    def add_active_weapon(self, weapon, power):
+        pass
 
 def main():
     """ Main method """
