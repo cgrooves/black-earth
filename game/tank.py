@@ -10,6 +10,8 @@ import numpy
 from weapons import weaponsList
 from config import TankConfig, TurretConfig
 
+# Defining scaling factor of tank sprites.
+SPRITE_SCALING_PLAYER = 0.5
 class Tank:
     """
     Class encapsulating a player Tank
@@ -38,6 +40,7 @@ class Tank:
         # Then creating the turret might look something more like
         # >> self.turret = TurretBasic()
         self.turretAngleDeg = TurretConfig.STARTING_ANGLE_DEG
+        self.flipped = False
         self.turretLength = TurretConfig.LENGTH
         self.power = TurretConfig.POWER_START
         
@@ -52,18 +55,23 @@ class Tank:
         # Set the active weapon
         self.activeWeapon = next(self.weaponsCycle)
 
-        # Defining scaling factor of tank sprites.
-        SPRITE_SCALING_PLAYER = 0.5
-
         # Tank Sprite List
         self.sprite_list = arcade.SpriteList()
-        
+
         # Load tank sprites
-        self.body_sprite = arcade.Sprite("./game/images/body.png", SPRITE_SCALING_PLAYER)
         self.turret_sprite = arcade.Sprite("./game/images/turret.png", SPRITE_SCALING_PLAYER)
-        self.track_sprite = arcade.Sprite("./game/images/tracks.png", SPRITE_SCALING_PLAYER)
-        self.sprite_list.append(self.body_sprite)
         self.sprite_list.append(self.turret_sprite)
+
+        self.body_texture_right = arcade.load_texture("./game/images/body.png", flipped_horizontally=False)
+        self.body_texture_left  = arcade.load_texture("./game/images/body.png", flipped_horizontally=True)
+        self.body_sprite = arcade.Sprite(scale=SPRITE_SCALING_PLAYER)
+        self.body_sprite.texture = self.body_texture_right
+        self.sprite_list.append(self.body_sprite)
+
+        self.track_texture_right = arcade.load_texture("./game/images/tracks.png", flipped_horizontally=False)
+        self.track_texture_left  = arcade.load_texture("./game/images/tracks.png", flipped_horizontally=True)
+        self.track_sprite = arcade.Sprite(scale=SPRITE_SCALING_PLAYER)
+        self.track_sprite.texture = self.track_texture_right
         self.sprite_list.append(self.track_sprite)
 
     def draw(self):
@@ -73,22 +81,6 @@ class Tank:
 
         self.sprite_list.draw()
 
-        # Draw turret
-        # Calculate turret end point
-        # turretPosition = pymunk.Vec2d(self.turretLength, 0)
-        # turretPosition.rotate_degrees(self.turretAngleDeg)
-        # self.turretTip.x = turretPosition.x + self.position.x
-        # self.turretTip.y = turretPosition.y + self.position.y + TurretConfig.WIDTH/2
-
-        #arcade.draw_line(
-        #    start_x=self.position.x,
-        #    start_y=self.position.y + TurretConfig.WIDTH/2,
-        #    end_x=self.turretTip.x,
-        #    end_y=self.turretTip.y,
-        #    color=self.color,
-        #    line_width=TurretConfig.WIDTH
-        #)
-    
     def on_key_press(self, key, modifiers):
         """
         Handle key presses.
@@ -145,9 +137,20 @@ class Tank:
             self.turretAngleDeg = TurretConfig.ANGLE_MAX
         elif self.turretAngleDeg < TurretConfig.ANGLE_MIN:
             self.turretAngleDeg = TurretConfig.ANGLE_MIN
-        
+
+        # Flip turret
+        if self.turretAngleDeg > 90 and not self.flipped:
+            self.flipped = True
+            self.body_sprite.texture = self.body_texture_left
+            self.track_sprite.texture = self.track_texture_left
+        if self.turretAngleDeg < 90 and self.flipped:
+            self.flipped = False
+            self.body_sprite.texture = self.body_texture_right
+            self.track_sprite.texture = self.track_texture_right
+
         # Increment the power
         self.power += self.powerIncrement
+
         # Bound the power
         if self.power > TurretConfig.POWER_MAX:
             self.power = TurretConfig.POWER_MAX
