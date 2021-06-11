@@ -166,16 +166,14 @@ class Tank:
 
         # Position Sprites
         self.body_sprite.center_x = self.position.x
-        self.body_sprite.center_y = self.position.y
+        self.body_sprite.center_y = self.position.y + 11
         self.track_sprite.center_x = self.position.x
-        self.track_sprite.center_y = self.position.y - 10
+        self.track_sprite.center_y = self.position.y + 2
 
         # Rotate turret
-        self.turret_sprite.center_x = 0
-        self.turret_sprite.center_y = 0
         self.turret_sprite.angle = self.turretAngleDeg
         self.turret_sprite.center_x = self.position.x + 9*numpy.cos(numpy.deg2rad(self.turretAngleDeg))
-        self.turret_sprite.center_y = self.position.y + 9*numpy.sin(numpy.deg2rad(self.turretAngleDeg)) + 9
+        self.turret_sprite.center_y = self.position.y + 9*numpy.sin(numpy.deg2rad(self.turretAngleDeg)) + 20
     
     def processFireEvent(self):
         """Create the artillery round and pass it to the physics engine"""
@@ -183,4 +181,5 @@ class Tank:
         weapon.angle = self.turretAngleDeg
         weapon.center_x = self.turretTip.x
         weapon.center_y = self.turretTip.y
-        self.parent.add_active_weapon(weapon, self.power)
+        weapon.power = self.power
+        self.parent.queue_fire_event(weapon)
