@@ -111,7 +111,8 @@ class BlackEarthGame(arcade.Window):
         """ Update game state for game objects """
 
         # Make the active tank update
-        self.activeTank.on_update()
+        for tank in self.tanksList:
+            tank.on_update()
 
         if self.processing_firing_events:
             # Update physics
@@ -145,7 +146,7 @@ class BlackEarthGame(arcade.Window):
     def create_tanks(self, num_tanks):
         # Populate a list based on number of tanks
         # The list will be useful for keeping track of all of the tanks, and
-        # being able to do the same operation (such a "draw") on them all very
+        # being able to do the same operation (such as "draw") on them all very
         # easily.
         self.tanksList = []
         for n in range(1,num_tanks + 1):
