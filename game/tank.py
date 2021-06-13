@@ -68,10 +68,7 @@ class Tank:
         self.body_sprite.texture = self.body_texture_right
         self.sprite_list.append(self.body_sprite)
 
-        self.track_texture_right = arcade.load_texture("./game/images/tracks.png", flipped_horizontally=False)
-        self.track_texture_left  = arcade.load_texture("./game/images/tracks.png", flipped_horizontally=True)
-        self.track_sprite = arcade.Sprite(scale=SPRITE_SCALING_PLAYER)
-        self.track_sprite.texture = self.track_texture_right
+        self.track_sprite = arcade.Sprite(filename="./game/images/tracks.png", scale=SPRITE_SCALING_PLAYER)
         self.sprite_list.append(self.track_sprite)
 
     def draw(self):
@@ -149,11 +146,9 @@ class Tank:
         if self.turretAngleDeg > 90 and not self.flipped:
             self.flipped = True
             self.body_sprite.texture = self.body_texture_left
-            self.track_sprite.texture = self.track_texture_left
         if self.turretAngleDeg < 90 and self.flipped:
             self.flipped = False
             self.body_sprite.texture = self.body_texture_right
-            self.track_sprite.texture = self.track_texture_right
 
         # Increment the power
         self.power += self.powerIncrement
