@@ -10,7 +10,7 @@ import numpy
 from weapons import weaponsList
 from config import TankConfig, TurretConfig
 
-class Tank:
+class Tank(arcade.Sprite):
     """
     Class encapsulating a player Tank
 
@@ -27,10 +27,20 @@ class Tank:
         """
         Construct the tank with a name, position and color
         """
+        self.size = TankConfig.SIZE
+        super().__init__(scale=self.size)
+
         self.name = name
         self.parent = parent
-        self.size = TankConfig.SIZE
-        self.position = position
+        # Offset the y position
+        self.center_x = position.x
+        self.center_y = position.y + 20
+        self.color = color
+        self.health = 100
+
+        self.append_texture(arcade.load_texture("./game/images/body.png", flipped_horizontally=False))
+        self.append_texture(arcade.load_texture("./game/images/body.png", flipped_horizontally=True))
+        self.set_texture(TankConfig.RIGHT_TEXT_ID)
         self.color = color
 
         # Create the turret
@@ -61,16 +71,11 @@ class Tank:
         self.sprite_list.append(self.turret_sprite)
         self.turret_sprite.color = color
 
-        self.body_sprite = arcade.Sprite(scale=self.size)
-        self.body_sprite.append_texture(arcade.load_texture("./game/images/body.png", flipped_horizontally=False))
-        self.body_sprite.append_texture(arcade.load_texture("./game/images/body.png", flipped_horizontally=True))
-        self.body_sprite.set_texture(TankConfig.RIGHT_TEXT_ID)
-        self.body_sprite.color = color
-        self.sprite_list.append(self.body_sprite)
-
         self.track_sprite = arcade.Sprite(filename="./game/images/tracks.png", scale=self.size)
         self.track_sprite.color = color
         self.sprite_list.append(self.track_sprite)
+
+        self.sprite_list.append(self)
 
     def draw(self):
         """
@@ -152,10 +157,10 @@ class Tank:
         # Flip turret
         if self.turretAngleDeg > 90 and not self.flipped:
             self.flipped = True
-            self.body_sprite.set_texture(TankConfig.LEFT_TEXT_ID)
+            self.set_texture(TankConfig.LEFT_TEXT_ID)
         if self.turretAngleDeg < 90 and self.flipped:
             self.flipped = False
-            self.body_sprite.set_texture(TankConfig.RIGHT_TEXT_ID)
+            self.set_texture(TankConfig.RIGHT_TEXT_ID)
 
         # Increment the power
         self.power += self.powerIncrement
@@ -167,15 +172,13 @@ class Tank:
             self.power = TurretConfig.POWER_MIN
 
         # Position Sprites
-        self.body_sprite.center_x = self.position.x
-        self.body_sprite.center_y = self.position.y + 11
-        self.track_sprite.center_x = self.position.x
-        self.track_sprite.center_y = self.position.y + 2
+        self.track_sprite.center_x = self.center_x
+        self.track_sprite.center_y = self.center_y - 15
 
         # Rotate turret
         self.turret_sprite.angle = self.turretAngleDeg
-        self.turret_sprite.center_x = self.position.x + 9*numpy.cos(numpy.deg2rad(self.turretAngleDeg))
-        self.turret_sprite.center_y = self.position.y + 9*numpy.sin(numpy.deg2rad(self.turretAngleDeg)) + 20
+        self.turret_sprite.center_x = self.center_x + 9*numpy.cos(numpy.deg2rad(self.turretAngleDeg))
+        self.turret_sprite.center_y = self.center_y + 9*numpy.sin(numpy.deg2rad(self.turretAngleDeg)) + 9
 
         # Set the turret tip
         self.turretTip.x = self.turret_sprite.center_x + 17*numpy.cos(numpy.deg2rad(self.turretAngleDeg))
