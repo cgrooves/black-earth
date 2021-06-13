@@ -91,9 +91,10 @@ class Tank:
         press, release, press, release, just to move two degrees). Instead, we'll change
         the turret's movement speed based on which keys are pressed.
         """
-        turretInc = TurretConfig.INC_STEP
         if modifiers & arcade.key.MOD_CTRL:
-            turretInc = TurretConfig.INC_STEP // 2
+            turretInc = TurretConfig.MINOR_INC_STEP
+        else:
+            turretInc = TurretConfig.MAJOR_INC_STEP
 
         if key == arcade.key.LEFT:
             self.turretSpeed = turretInc
@@ -113,8 +114,6 @@ class Tank:
         Decrement the turret speed. The equivalent of saying "When!" when
         your dad is pouring juice.
         """
-        if modifiers & arcade.key.MOD_CTRL:
-            self.turretSpeed *= 2
 
         if key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.turretSpeed = 0

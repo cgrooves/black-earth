@@ -14,7 +14,7 @@ class GameConfig:
         SEQUENTIAL = 1
         SYNCHRONOUS = 2
 
-    NUM_TANKS = 4
+    NUM_TANKS = 3
     TURN_STYLE = TurnStyle.SEQUENTIAL
 
 class PhysicsConfig:
@@ -27,7 +27,7 @@ class WeaponConfig:
     COLOR = arcade.color.GHOST_WHITE
 
 class TankConfig:
-    SIZE = 50
+    SIZE = 30
 
     COLORS = itertools.cycle([
         arcade.csscolor.RED,
@@ -35,7 +35,10 @@ class TankConfig:
         arcade.csscolor.GREEN,
         arcade.csscolor.YELLOW,
         arcade.csscolor.LAVENDER,
-        arcade.csscolor.DEEP_PINK
+        arcade.csscolor.DEEP_PINK,
+        arcade.csscolor.WHEAT,
+        arcade.csscolor.WHITE,
+        arcade.csscolor.BLACK
     ])
 
 class TurretConfig:
@@ -43,12 +46,13 @@ class TurretConfig:
     WIDTH = 5
     OFFSET_Y = 5
 
-    INC_STEP = 2
+    MAJOR_INC_STEP = 2
+    MINOR_INC_STEP = 1
 
     ANGLE_MAX = 180
     ANGLE_MIN = 0
     STARTING_ANGLE_DEG = 45
 
-    POWER_MAX = 100
+    POWER_MAX = 1000
     POWER_MIN = 0
-    POWER_START = 50
+    POWER_START = 0
