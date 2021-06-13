@@ -61,14 +61,17 @@ class Tank:
         # Load tank sprites
         self.turret_sprite = arcade.Sprite("./game/images/turret.png", SPRITE_SCALING_PLAYER)
         self.sprite_list.append(self.turret_sprite)
+        self.turret_sprite.color = color
 
         self.body_texture_right = arcade.load_texture("./game/images/body.png", flipped_horizontally=False)
         self.body_texture_left  = arcade.load_texture("./game/images/body.png", flipped_horizontally=True)
         self.body_sprite = arcade.Sprite(scale=SPRITE_SCALING_PLAYER)
         self.body_sprite.texture = self.body_texture_right
+        self.body_sprite.color = color
         self.sprite_list.append(self.body_sprite)
 
         self.track_sprite = arcade.Sprite(filename="./game/images/tracks.png", scale=SPRITE_SCALING_PLAYER)
+        self.track_sprite.color = color
         self.sprite_list.append(self.track_sprite)
 
     def draw(self):
