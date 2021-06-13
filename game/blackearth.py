@@ -34,6 +34,8 @@ class BlackEarthGame(arcade.Window):
 
         # Set up member variables
         self.active_weapons: Optional[arcade.SpriteList] = None
+        self.tankSpriteList: Optional[arcade.SpriteList] = None
+        self.tanksList: Optional[list] = None
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
         self.processing_firing_events = False
         self.weapons_queue = Optional[queue.Queue]
@@ -129,8 +131,7 @@ class BlackEarthGame(arcade.Window):
         arcade.start_render()
         # Code to draw the screen goes here
 
-        for player in self.tanksList:
-            player.draw()
+        self.tankSpriteList.draw()
         
         self.active_weapons.draw()
 
@@ -144,11 +145,14 @@ class BlackEarthGame(arcade.Window):
     ## ------------------------------------------------------------- ##
 
     def create_tanks(self, num_tanks):
+
+        self.tankSpriteList = arcade.SpriteList()
+        self.tanksList = []
+
         # Populate a list based on number of tanks
         # The list will be useful for keeping track of all of the tanks, and
         # being able to do the same operation (such as "draw") on them all very
         # easily.
-        self.tanksList = []
         for n in range(1,num_tanks + 1):
             new_tank = tank.Tank(
                 name = f"Player {n}",
@@ -158,6 +162,7 @@ class BlackEarthGame(arcade.Window):
             )
 
             self.tanksList.append(new_tank)
+            self.tankSpriteList.extend(new_tank.sprite_list)
 
         # Create a circular Iterator for the tank list
         # An Iterator is something different from a list, though certainly you can
