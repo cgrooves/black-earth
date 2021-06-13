@@ -145,6 +145,11 @@ class Tank(arcade.Sprite):
 
         Update the turret angle (and bound it to a min and max).
         """
+        # Handle health
+        if self.health <= 0:
+            print(f"{self.name} hath died!")
+            self.death()
+
         # Increment the turret speed
         self.turretAngleDeg += self.turretSpeed
         
@@ -192,3 +197,8 @@ class Tank(arcade.Sprite):
         weapon.center_y = self.turretTip.y
         weapon.power = self.power
         self.parent.queue_fire_event(weapon)
+    
+    def death(self):
+        self.track_sprite.kill()
+        self.turret_sprite.kill()
+        self.kill()

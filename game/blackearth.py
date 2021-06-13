@@ -35,7 +35,7 @@ class BlackEarthGame(arcade.Window):
         # Set up member variables
         self.active_weapons: Optional[arcade.SpriteList] = None
         self.tankSpriteList: Optional[arcade.SpriteList] = None
-        self.tanksList: Optional[list] = None
+        self.tanksList: Optional[arcade.SpriteList] = None
         self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
         self.processing_firing_events = False
         self.weapons_queue = Optional[queue.Queue]
@@ -147,7 +147,7 @@ class BlackEarthGame(arcade.Window):
     def create_tanks(self, num_tanks):
 
         self.tankSpriteList = arcade.SpriteList()
-        self.tanksList = []
+        self.tanksList = arcade.SpriteList()
 
         # Populate a list based on number of tanks
         # The list will be useful for keeping track of all of the tanks, and
@@ -220,13 +220,27 @@ class BlackEarthGame(arcade.Window):
             collision_type="ground"
         )
 
+        # Add the tank
+        self.physics_engine.add_sprite_list(
+            self.tanksList,
+            body_type=arcade.PymunkPhysicsEngine.STATIC,
+            collision_type="tank"
+        )
+
         # Add collision between tank weapon and ground
         def weapon_ground_handler(weapon_sprite, ground_sprite, _arbiter, _space, _data):
             """Called for weapon/ground collision"""
             weapon_sprite.detonate()
             weapon_sprite.remove_from_sprite_lists()
 
+        # Add collision between tank weapon and tank
+        def weapon_tank_handler(weapon_sprite, tank_sprite, _arbiter, _space, _data):
+            """Called for weapon/tank collision"""
+            weapon_sprite.detonate(tank_sprite)
+            weapon_sprite.remove_from_sprite_lists()
+
         self.physics_engine.add_collision_handler("weapon", "ground", post_handler=weapon_ground_handler)
+        self.physics_engine.add_collision_handler("weapon", "tank", post_handler=weapon_tank_handler)
     
     def draw_hud(self):
         # TODO: Encapsulate the HUD as a class

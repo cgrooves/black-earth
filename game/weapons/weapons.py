@@ -28,7 +28,7 @@ class Weapon(arcade.SpriteCircle):
         if self.center_x <= 0 or self.center_x >= WindowConfig.WIDTH:
             self.remove_from_sprite_lists()
     
-    def detonate(self):
+    def detonate(self, tank=None):
         pass
 
 
@@ -37,8 +37,11 @@ class BabyMissile(Weapon):
 
     name = "Baby Missile"
 
-    def detonate(self):
+    def detonate(self, tank=None):
         print("little boom")
+
+        if tank is not None:
+            tank.health -= 50
 
 
 class Missile(Weapon):
@@ -46,5 +49,8 @@ class Missile(Weapon):
 
     name = "Missile"
     
-    def detonate(self):
+    def detonate(self, tank=None):
         print("BIGGER BOOM!")
+
+        if tank is not None:
+            tank.health -= 100
