@@ -129,6 +129,10 @@ class Tank:
 
         if key == arcade.key.H:
             self.power = TurretConfig.POWER_MAX
+        if key == arcade.key.L:
+            self.power = TurretConfig.POWER_MIN
+        if key == arcade.key.M:
+            self.power = (TurretConfig.POWER_MAX - TurretConfig.POWER_MIN) // 2
 
     def on_update(self):
         """
