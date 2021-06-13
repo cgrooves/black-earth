@@ -127,6 +127,9 @@ class Tank:
         if key == arcade.key.TAB:
             self.activeWeapon = next(self.weaponsCycle)
 
+        if key == arcade.key.H:
+            self.power = TurretConfig.POWER_MAX
+
     def on_update(self):
         """
         Update the player state
@@ -169,6 +172,10 @@ class Tank:
         self.turret_sprite.angle = self.turretAngleDeg
         self.turret_sprite.center_x = self.position.x + 9*numpy.cos(numpy.deg2rad(self.turretAngleDeg))
         self.turret_sprite.center_y = self.position.y + 9*numpy.sin(numpy.deg2rad(self.turretAngleDeg)) + 20
+
+        # Set the turret tip
+        self.turretTip.x = self.turret_sprite.center_x + 17*numpy.cos(numpy.deg2rad(self.turretAngleDeg))
+        self.turretTip.y = self.turret_sprite.center_y + 17*numpy.sin(numpy.deg2rad(self.turretAngleDeg))
     
     def processFireEvent(self):
         """Create the artillery round and pass it to the physics engine"""
