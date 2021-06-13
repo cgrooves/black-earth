@@ -27,7 +27,7 @@ class WeaponConfig:
     COLOR = arcade.color.GHOST_WHITE
 
 class TankConfig:
-    SIZE = 30
+    SIZE = 0.5
 
     COLORS = itertools.cycle([
         arcade.csscolor.RED,
@@ -40,6 +40,9 @@ class TankConfig:
         arcade.csscolor.WHITE,
         arcade.csscolor.BLACK
     ])
+
+    RIGHT_TEXT_ID = 0
+    LEFT_TEXT_ID = 1
 
 class TurretConfig:
     LENGTH = 40

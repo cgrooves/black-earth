@@ -10,8 +10,6 @@ import numpy
 from weapons import weaponsList
 from config import TankConfig, TurretConfig
 
-# Defining scaling factor of tank sprites.
-SPRITE_SCALING_PLAYER = 0.5
 class Tank:
     """
     Class encapsulating a player Tank
@@ -59,18 +57,18 @@ class Tank:
         self.sprite_list = arcade.SpriteList()
 
         # Load tank sprites
-        self.turret_sprite = arcade.Sprite("./game/images/turret.png", SPRITE_SCALING_PLAYER)
+        self.turret_sprite = arcade.Sprite("./game/images/turret.png", self.size)
         self.sprite_list.append(self.turret_sprite)
         self.turret_sprite.color = color
 
-        self.body_texture_right = arcade.load_texture("./game/images/body.png", flipped_horizontally=False)
-        self.body_texture_left  = arcade.load_texture("./game/images/body.png", flipped_horizontally=True)
-        self.body_sprite = arcade.Sprite(scale=SPRITE_SCALING_PLAYER)
-        self.body_sprite.texture = self.body_texture_right
+        self.body_sprite = arcade.Sprite(scale=self.size)
+        self.body_sprite.append_texture(arcade.load_texture("./game/images/body.png", flipped_horizontally=False))
+        self.body_sprite.append_texture(arcade.load_texture("./game/images/body.png", flipped_horizontally=True))
+        self.body_sprite.set_texture(TankConfig.RIGHT_TEXT_ID)
         self.body_sprite.color = color
         self.sprite_list.append(self.body_sprite)
 
-        self.track_sprite = arcade.Sprite(filename="./game/images/tracks.png", scale=SPRITE_SCALING_PLAYER)
+        self.track_sprite = arcade.Sprite(filename="./game/images/tracks.png", scale=self.size)
         self.track_sprite.color = color
         self.sprite_list.append(self.track_sprite)
 
@@ -147,10 +145,10 @@ class Tank:
         # Flip turret
         if self.turretAngleDeg > 90 and not self.flipped:
             self.flipped = True
-            self.body_sprite.texture = self.body_texture_left
+            self.body_sprite.set_texture(TankConfig.LEFT_TEXT_ID)
         if self.turretAngleDeg < 90 and self.flipped:
             self.flipped = False
-            self.body_sprite.texture = self.body_texture_right
+            self.body_sprite.set_texture(TankConfig.RIGHT_TEXT_ID)
 
         # Increment the power
         self.power += self.powerIncrement
