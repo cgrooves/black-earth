@@ -139,7 +139,7 @@ class Tank(arcade.Sprite):
         if key == arcade.key.M:
             self.power = (TurretConfig.POWER_MAX - TurretConfig.POWER_MIN) // 2
 
-    def on_update(self):
+    def on_update(self, delta_time):
         """
         Update the player state
 

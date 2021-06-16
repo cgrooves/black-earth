@@ -33,10 +33,10 @@ class BlackEarthGame(arcade.Window):
         super().__init__(width, height, title)
 
         # Set up member variables
-        self.active_weapons: Optional[arcade.SpriteList] = None
+        self.weaponsQueue: Optional[arcade.SpriteList] = None
         self.tankSpriteList: Optional[arcade.SpriteList] = None
         self.tanksList: Optional[arcade.SpriteList] = None
-        self.physics_engine = Optional[arcade.PymunkPhysicsEngine]
+        self.physicsEngine = Optional[arcade.PymunkPhysicsEngine]
         self.processing_firing_events = False
         self.weapons_queue = Optional[queue.Queue]
 
@@ -113,15 +113,14 @@ class BlackEarthGame(arcade.Window):
         """ Update game state for game objects """
 
         # Make the active tank update
-        for tank in self.tanksList:
-            tank.on_update()
+        self.tanksList.on_update(delta_time)
 
         if self.processing_firing_events:
             # Update physics
-            self.physics_engine.step(delta_time=delta_time)
+            self.physicsEngine.step(delta_time=delta_time)
 
             # Check to see if its time to move on
-            if len(self.active_weapons) == 0:
+            if len(self.weaponsQueue) == 0:
 
                 self.processing_firing_events = False
 
@@ -129,11 +128,10 @@ class BlackEarthGame(arcade.Window):
         """ Render the screen. """
 
         arcade.start_render()
-        # Code to draw the screen goes here
 
         self.tankSpriteList.draw()
         
-        self.active_weapons.draw()
+        self.weaponsQueue.draw()
 
         self.draw_hud()
 
@@ -193,7 +191,7 @@ class BlackEarthGame(arcade.Window):
         self.ground.center_y = WindowConfig.HEIGHT / 6
 
     def setup_weapons(self, num_tanks: int):
-        self.active_weapons = arcade.SpriteList()
+        self.weaponsQueue = arcade.SpriteList()
 
         # Set up the firing queue
         if GameConfig.TURN_STYLE == GameConfig.TurnStyle.SEQUENTIAL:
@@ -206,7 +204,7 @@ class BlackEarthGame(arcade.Window):
         self.weapons_queue = queue.Queue(maxsize=maxsize)
     
     def setup_physics_engine(self):
-        self.physics_engine = arcade.PymunkPhysicsEngine(
+        self.physicsEngine = arcade.PymunkPhysicsEngine(
             gravity=(0, PhysicsConfig.GRAVITY),
             damping=PhysicsConfig.DAMPING
         )
@@ -214,14 +212,14 @@ class BlackEarthGame(arcade.Window):
     def setup_physics_collisions(self):
 
         # Add the ground
-        self.physics_engine.add_sprite(
+        self.physicsEngine.add_sprite(
             self.ground,
             body_type=arcade.PymunkPhysicsEngine.STATIC,
             collision_type="ground"
         )
 
         # Add the tank
-        self.physics_engine.add_sprite_list(
+        self.physicsEngine.add_sprite_list(
             self.tanksList,
             body_type=arcade.PymunkPhysicsEngine.STATIC,
             collision_type="tank"
@@ -239,8 +237,8 @@ class BlackEarthGame(arcade.Window):
             weapon_sprite.detonate(tank_sprite)
             weapon_sprite.remove_from_sprite_lists()
 
-        self.physics_engine.add_collision_handler("weapon", "ground", post_handler=weapon_ground_handler)
-        self.physics_engine.add_collision_handler("weapon", "tank", post_handler=weapon_tank_handler)
+        self.physicsEngine.add_collision_handler("weapon", "ground", post_handler=weapon_ground_handler)
+        self.physicsEngine.add_collision_handler("weapon", "tank", post_handler=weapon_tank_handler)
     
     def draw_hud(self):
         # TODO: Encapsulate the HUD as a class
@@ -279,13 +277,13 @@ class BlackEarthGame(arcade.Window):
     def add_active_weapon(self, weapon: Weapon):
         """Add a tank's activated (i.e. fired) weapon to the physics engine"""
 
-        self.active_weapons.append(weapon)
-        self.physics_engine.add_sprite(weapon,
+        self.weaponsQueue.append(weapon)
+        self.physicsEngine.add_sprite(weapon,
             mass=weapon.mass,
             damping=PhysicsConfig.DAMPING,
             friction=weapon.friction,
             collision_type="weapon")
-        self.physics_engine.apply_impulse(weapon, (weapon.power,0))
+        self.physicsEngine.apply_impulse(weapon, (weapon.power,0))
 
     def queue_fire_event(self, weapon: Weapon):
         """Queue a fire event to be processed by the game"""
