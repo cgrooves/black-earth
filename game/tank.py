@@ -10,6 +10,22 @@ import numpy
 from weapons import weaponsList
 from config import TankConfig, TurretConfig
 
+class TankList(arcade.SpriteList):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._index = 0
+
+    def getNext(self):
+        if len(self.sprite_list) == 0:
+            return None
+        elif self._index == len(self.sprite_list):
+            self._index = 0
+        
+        item = self.sprite_list[self._index]
+        self._index += 1
+        return item
+
 class Tank(arcade.Sprite):
     """
     Class encapsulating a player Tank
