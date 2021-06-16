@@ -41,6 +41,9 @@ class BlackEarthGame(arcade.Window):
         self.processing_firing_events = False
         self.weapons_queue = Optional[queue.Queue]
 
+        self.activeState : Optional[GameState] = None
+        self.ballisticSimState = BallisticSimState(self)
+        self.inputState = InputState(self)
 
     def setup(self, num_tanks=2):
         """ Set up the game here. Call this function to restart the game.
@@ -50,6 +53,8 @@ class BlackEarthGame(arcade.Window):
         in the future, this is just a fun way to be able to parameterize
         @param num_tanks Number of tanks to instantiate
         """
+
+        self.activeState = self.inputState
 
         # Set up players
         self.create_tanks(num_tanks)
@@ -67,27 +72,7 @@ class BlackEarthGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Handle key press events"""
 
-        # Check if we should be accepting player inputs
-        if self.processing_firing_events:
-            return
-
-        # Pass through inputs to activeTank
-
-        # Instead of having the Window object handle all of the logic for
-        # updating the Tank's turret, we can use the fact that the Tank is
-        # a class, and can define its own behaviors (e.g. functions, or methods),
-        # that we can then use. So the idea here is to pass the key event on to
-        # the Tank, and let it update itself. That way, if somebody really
-        # wants to know exactly what the Tank is doing with key presses, they can
-        # go look. Otherwise, if they just want to know the general flow of the
-        # game, they can look here and say "oh look, the Tank handles keyboard events".
-        # This is an example of the idea of "encapsulation", an important principle
-        # in programming. Encapsulation states that we should try to group similar
-        # data and behaviors and put them into a box, with only useful interfaces
-        # exposed. Think of a car: we encapsulate the workings of the engine and
-        # the starter and just give people a key to turn. Then, if they want to know
-        # more, or things aren't working, they can pop the hood and look in.
-        self.activeTank.on_key_press(key, modifiers)
+        self.activeState.on_key_press(key, modifiers)
     
     def on_key_release(self, key, modifiers):
         """Handle key release events"""
@@ -96,49 +81,20 @@ class BlackEarthGame(arcade.Window):
         if key == arcade.key.ESCAPE:
             exit()
 
-        # Check if we should be accepting player inputs
-        if self.processing_firing_events:
-            return
-
-        # Pass through inputs to activeTank
-        self.activeTank.on_key_release(key, modifiers)
-
-        # Handle space bar
-        # I'm putting this code here, after passing the key press and key release
-        # onto the active tank, so that the tank can do its own events with the
-        # spacebar before we "pass the control"
-        if key == arcade.key.SPACE:
-            # Actually set the active tank
-            self.activeTank = self.tanksList.getNext()
+        self.activeState.on_key_release(key, modifiers)
 
     def on_update(self, delta_time):
         """ Update game state for game objects """
 
         # Make the active tank update
-        self.tanksList.on_update(delta_time)
-
-        if self.processing_firing_events:
-            # Update physics
-            self.physicsEngine.step(delta_time=delta_time)
-
-            # Check to see if its time to move on
-            if len(self.weaponsQueue) == 0:
-
-                self.processing_firing_events = False
+        self.activeState.on_update(delta_time)
 
     def on_draw(self):
         """ Render the screen. """
 
         arcade.start_render()
 
-        self.tankSpriteList.draw()
-        
-        self.weaponsQueue.draw()
-
-        self.draw_hud()
-
-        # Draw other shapes
-        self.ground.draw()
+        self.activeState.on_draw()
 
     ## ------------------------------------------------------------- ##
     ## Custom functions defined below

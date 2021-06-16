@@ -1,9 +1,6 @@
-from abc import ABC, abstractmethod
-
 import arcade
 
-
-class GameState(ABC):
+class GameState:
 
     def __init__(self, game) -> None:
         super().__init__()
@@ -12,9 +9,8 @@ class GameState(ABC):
     def setup(self):
         pass
     
-    @abstractmethod
     def on_update(self, delta_time):
-        pass
+        self._game.tanksList.on_update(delta_time)
 
     def on_key_press(self, key, modifiers):
         pass
@@ -47,12 +43,6 @@ class InputState(GameState):
         if key == arcade.key.SPACE:
             self._game.activeState = self._game.ballisticSimState
 
-    def on_update(self, delta_time):
-        self._game.activeTank.on_update(delta_time)
-    
-    def on_draw(self):
-        super().on_draw()
-
 
 class BallisticSimState(GameState):
 
@@ -60,10 +50,11 @@ class BallisticSimState(GameState):
         super().__init__(game)
 
     def on_update(self, delta_time):
+        super().on_update(delta_time)
 
         # Handle transition to next state
         if len(self._game.weaponsQueue) == 0:
-            self._game.activeTank = self._game.tanksList.next()
+            self._game.activeTank = self._game.tanksList.getNext()
             self._game.activeState = self._game.inputState
         
         # Update bullet physics
