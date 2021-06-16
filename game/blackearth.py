@@ -12,8 +12,9 @@ import pymunk
 from typing import Optional
 
 # Local import statements
-import tank
+from tank import Tank, TankList
 from weapons import Weapon
+from game_states import GameState, InputState, BallisticSimState
 
 from config import WindowConfig, GameConfig, PhysicsConfig, TankConfig
 
@@ -35,10 +36,11 @@ class BlackEarthGame(arcade.Window):
         # Set up member variables
         self.weaponsQueue: Optional[arcade.SpriteList] = None
         self.tankSpriteList: Optional[arcade.SpriteList] = None
-        self.tanksList: Optional[arcade.SpriteList] = None
+        self.tanksList: Optional[TankList] = None
         self.physicsEngine = Optional[arcade.PymunkPhysicsEngine]
         self.processing_firing_events = False
         self.weapons_queue = Optional[queue.Queue]
+
 
     def setup(self, num_tanks=2):
         """ Set up the game here. Call this function to restart the game.
@@ -107,7 +109,7 @@ class BlackEarthGame(arcade.Window):
         # spacebar before we "pass the control"
         if key == arcade.key.SPACE:
             # Actually set the active tank
-            self.activeTank = next(self.tanksCycle)
+            self.activeTank = self.tanksList.getNext()
 
     def on_update(self, delta_time):
         """ Update game state for game objects """
@@ -145,14 +147,14 @@ class BlackEarthGame(arcade.Window):
     def create_tanks(self, num_tanks):
 
         self.tankSpriteList = arcade.SpriteList()
-        self.tanksList = arcade.SpriteList()
+        self.tanksList = TankList()
 
         # Populate a list based on number of tanks
         # The list will be useful for keeping track of all of the tanks, and
         # being able to do the same operation (such as "draw") on them all very
         # easily.
         for n in range(1,num_tanks + 1):
-            new_tank = tank.Tank(
+            new_tank = Tank(
                 name = f"Player {n}",
                 parent = self,
                 position = pymunk.Vec2d(WindowConfig.WIDTH*n/(num_tanks+1), WindowConfig.HEIGHT/3),
@@ -162,20 +164,8 @@ class BlackEarthGame(arcade.Window):
             self.tanksList.append(new_tank)
             self.tankSpriteList.extend(new_tank.sprite_list)
 
-        # Create a circular Iterator for the tank list
-        # An Iterator is something different from a list, though certainly you can
-        # "iterate" through things like lists and tuples and even dictionaries.
-        # In other words, lists and tuples and dictionaries can themselves be termed
-        # "Iterators". I still want a list of tanks, but I also want something that
-        # points to that list, but I can use to cycle through them endlessly. I know
-        # that I want this, because I know that I just want to be able to keep going
-        # to whatever Tank's turn is next. Next, next, next. Me calling "next" shouldn't
-        # alter the list of tanks; I can have two "views" of the same data: the list
-        # view, and the endless cycle view.
-        self.tanksCycle = itertools.cycle(self.tanksList)
-
         # Set the active player
-        self.activeTank = next(self.tanksCycle)
+        self.activeTank = self.tanksList.getNext()
     
     def create_environment(self):
         # Color the sky
