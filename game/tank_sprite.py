@@ -43,7 +43,7 @@ class MyGame(arcade.Window):
         """ Update game state for game objects """
 
         # Make the active tank update
-        self.tank.on_update()
+        self.tank.on_update(delta_time)
 
     def on_key_press(self, key, modifiers):
         # Pass through
