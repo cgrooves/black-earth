@@ -1,7 +1,3 @@
-"""
-Hello-World example given from https://arcade.academy/examples/platform_tutorial/step_01.html
-"""
-
 # General import statements
 import itertools
 import queue
