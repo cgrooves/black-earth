@@ -5,8 +5,6 @@ import itertools
 import arcade
 import pymunk
 
-import numpy
-
 # Local imports
 from weapons import weaponsList
 from config import TankConfig, TurretConfig
@@ -45,7 +43,7 @@ class Tank:
         self.turretSpeed = 0
         self.powerIncrement = 0
         
-        self.turretTip = pymunk.Vec2d()
+        self.turretTip = pymunk.Vec2d(0, 0)
 
         # Create a cyclical view of the weapons list
         self.weaponsCycle = itertools.cycle(weaponsList)
@@ -70,9 +68,10 @@ class Tank:
         # Draw turret
         # Calculate turret end point
         turretPosition = pymunk.Vec2d(self.turretLength, 0)
-        turretPosition.rotate_degrees(self.turretAngleDeg)
-        self.turretTip.x = turretPosition.x + self.position.x
-        self.turretTip.y = turretPosition.y + self.position.y + TurretConfig.WIDTH/2
+        turretPosition = turretPosition.rotated_degrees(self.turretAngleDeg)
+        x = turretPosition.x + self.position.x
+        y = turretPosition.y + self.position.y + TurretConfig.WIDTH/2
+        self.turretTip = pymunk.Vec2d(x, y)
 
         arcade.draw_line(
             start_x=self.position.x,
